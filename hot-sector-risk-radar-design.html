@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>热点板块风险雷达 - 系统设计方案</title>
+<style>
+  :root {
+    --bg-primary: #0f1117;
+    --bg-secondary: #161822;
+    --bg-card: #1c1f2e;
+    --bg-card-hover: #222640;
+    --border: #2a2e42;
+    --border-light: #363b54;
+    --text-primary: #e4e6f0;
+    --text-secondary: #9ca0b8;
+    --text-muted: #6b6f88;
+    --accent-blue: #4f8ff7;
+    --accent-green: #34d399;
+    --accent-yellow: #fbbf24;
+    --accent-red: #f87171;
+    --accent-purple: #a78bfa;
+    --accent-cyan: #22d3ee;
+    --accent-orange: #fb923c;
+    --shield-color: #4f8ff7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 3px;
+    transition: background 0.2s;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-blue);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-light) var(--bg-primary);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 20px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  /* Navigation Sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 30px 0;
+    z-index: 100;
+  }
+
+  .sidebar-title {
+    padding: 0 24px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .sidebar a {
+    display: block;
+    padding: 8px 24px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+
+  .sidebar a:hover {
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border-left-color: var(--accent-blue);
+  }
+
+  .sidebar a.active {
+    color: var(--accent-blue);
+    background: rgba(79,143,247,0.08);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .sidebar a.sub {
+    padding-left: 40px;
+    font-size: 12px;
+  }
+
+  .sidebar a.sub.active {
+    color: var(--accent-cyan);
+    background: rgba(34,211,238,0.06);
+    border-left-color: var(--accent-cyan);
+  }
+
+  /* Main Content */
+  .main {
+    margin-left: 280px;
+    padding: 60px 80px 120px;
+    max-width: 960px;
+  }
+
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 80px 0 60px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 60px;
+  }
+
+  .hero-icon {
+    font-size: 64px;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero .subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+  }
+
+  .hero .tagline {
+    display: inline-block;
+    padding: 8px 24px;
+    border: 1px solid var(--accent-blue);
+    border-radius: 20px;
+    color: var(--accent-blue);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-number {
+    color: var(--accent-blue);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+
+  .section h2 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 32px 0 16px;
+    color: var(--text-primary);
+  }
+
+  .section h4 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 20px 0 10px;
+    color: var(--accent-cyan);
+  }
+
+  p { margin-bottom: 16px; color: var(--text-secondary); }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card.highlight {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 20px rgba(79,143,247,0.1);
+  }
+
+  .card.warning {
+    border-color: var(--accent-yellow);
+  }
+
+  .card.danger {
+    border-color: var(--accent-red);
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+  }
+
+  /* Grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  th {
+    background: var(--bg-secondary);
+    color: var(--accent-cyan);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+  }
+
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+  }
+
+  tr:hover td {
+    background: var(--bg-card);
+  }
+
+  /* Code/Flow blocks */
+  .flow-block {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-family: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* Tags / Badges */
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .tag-blue { background: rgba(79,143,247,0.15); color: var(--accent-blue); }
+  .tag-green { background: rgba(52,211,153,0.15); color: var(--accent-green); }
+  .tag-yellow { background: rgba(251,191,36,0.15); color: var(--accent-yellow); }
+  .tag-red { background: rgba(248,113,113,0.15); color: var(--accent-red); }
+  .tag-purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+  .tag-cyan { background: rgba(34,211,238,0.15); color: var(--accent-cyan); }
+  .tag-orange { background: rgba(251,146,60,0.15); color: var(--accent-orange); }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+  }
+
+  .score-bar .bar {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .score-bar .fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .score-bar .label {
+    min-width: 32px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Lifecycle diagram */
+  .lifecycle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin: 30px 0;
+  }
+
+  .lifecycle-stage {
+    text-align: center;
+    padding: 20px 28px;
+    position: relative;
+    min-width: 140px;
+  }
+
+  .lifecycle-stage .icon { font-size: 28px; margin-bottom: 8px; }
+  .lifecycle-stage .name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .lifecycle-stage .desc { font-size: 12px; color: var(--text-muted); }
+
+  .lifecycle-arrow {
+    font-size: 24px;
+    color: var(--text-muted);
+    padding: 0 4px;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* Callout */
+  .callout {
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  .callout-info { background: rgba(79,143,247,0.08); border-left: 3px solid var(--accent-blue); }
+  .callout-success { background: rgba(52,211,153,0.08); border-left: 3px solid var(--accent-green); }
+  .callout-warning { background: rgba(251,191,36,0.08); border-left: 3px solid var(--accent-yellow); }
+  .callout-danger { background: rgba(248,113,113,0.08); border-left: 3px solid var(--accent-red); }
+
+  .callout strong { color: var(--text-primary); }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 30px;
+    margin: 20px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 12px 0 12px 24px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px; top: 18px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--accent-blue);
+    background: var(--bg-primary);
+  }
+
+  .timeline-item .time {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 4px;
+  }
+
+  .timeline-item .content {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  .timeline-item.alert::before {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 8px rgba(248,113,113,0.3);
+  }
+
+  .timeline-item.alert .time { color: var(--accent-red); }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 40px 30px 80px; }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+    .lifecycle { flex-wrap: wrap; }
+  }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+    .lifecycle { flex-direction: column; }
+    .lifecycle-arrow { transform: rotate(90deg); }
+  }
+
+  /* Print */
+  @media print {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    body { background: white; color: #333; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar">
+  <div class="sidebar-title">📋 目录导航</div>
+  <a href="#hero">顶部</a>
+  <a href="#s1">1. 系统定位与核心理念</a>
+  <a href="#s1" class="sub">1.1 盾与矛的选择</a>
+  <a href="#s1" class="sub">1.2 核心价值三层模型</a>
+  <a href="#s2">2. 空间策略：热点板块聚焦</a>
+  <a href="#s2" class="sub">2.1 动态板块池</a>
+  <a href="#s2" class="sub">2.2 板块热度量化</a>
+  <a href="#s3">3. 时间策略：三层信号体系</a>
+  <a href="#s3" class="sub">3.1 信号分层架构</a>
+  <a href="#s3" class="sub">3.2 综合风险评分</a>
+  <a href="#s4">4. 板块生命周期识别</a>
+  <a href="#s4" class="sub">4.1 四阶段模型</a>
+  <a href="#s4" class="sub">4.2 分化判断五大量化指标</a>
+  <a href="#s5">5. 动态阈值方法论</a>
+  <a href="#s5" class="sub">5.1 市场状态分类</a>
+  <a href="#s5" class="sub">5.2 历史百分位法</a>
+  <a href="#s5" class="sub">5.3 验证闭环</a>
+  <a href="#s6">6. 预期差分析体系</a>
+  <a href="#s6" class="sub">6.1 完整版 vs MVP降级方案</a>
+  <a href="#s7">7. 国际事件影响通道</a>
+  <a href="#s7" class="sub">7.1 四条影响通道</a>
+  <a href="#s7" class="sub">7.2 事件→板块映射</a>
+  <a href="#s8">8. 运行机制设计</a>
+  <a href="#s8" class="sub">8.1 定时驱动 + 事件触发</a>
+  <a href="#s9">9. 数据源架构</a>
+  <a href="#s9" class="sub">9.1 数据源覆盖评估</a>
+  <a href="#s9" class="sub">9.2 付费需求分析</a>
+  <a href="#s10">10. MVP阶段规划</a>
+  <a href="#s11">11. 风险与限制</a>
+</nav>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Hero -->
+  <div class="hero" id="hero">
+    <div class="hero-icon">🛡️</div>
+    <h1>热点板块风险雷达</h1>
+    <div class="subtitle">Hot Sector Risk Radar — 系统设计方案</div>
+    <div class="tagline">这是盾，不是矛 — 做防守，不做进攻</div>
+    <div class="meta-row">
+      <span>📅 2026.06</span>
+      <span>📋 版本 v1.0</span>
+      <span>🎯 A股市场</span>
+    </div>
+  </div>
+
+  <!-- Section 1: 系统定位 -->
+  <div class="section" id="s1">
+    <div class="section-number">SECTION 01</div>
+    <h2>系统定位与核心理念</h2>
+
+    <h3>1.1 盾与矛的选择</h3>
+
+    <div class="grid-2">
+      <div class="card danger">
+        <div class="card-title">❌ 错误定位：矛</div>
+        <p>公告出来 → 告诉你"买入机会" → 你去追高 → <strong style="color:var(--accent-red)">接盘侠</strong></p>
+        <p>信息永远滞后于内幕，散户用"买入信号"永远慢一拍</p>
+      </div>
+      <div class="card highlight">
+        <div class="card-title">✅ 正确定位：盾</div>
+        <p>信息出来 → 评估"预期差多少"+"持仓风险多大"+"信号是否共振" → <strong style="color:var(--accent-blue)">防守决策</strong></p>
+        <p>在公开信息中提取更高维度的认知，而非抢先获取信息</p>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <strong>核心洞察：</strong>AI 的价值不是"抢先获取信息"（你永远抢不过内幕），而是"在公开信息中看到别人看不到的东西"。防守优先、预期差量化、信号共振。
+    </div>
+
+    <h3>1.2 核心价值三层模型</h3>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">🎯 第一层：预期差量化</div>
+        <p>不是告诉你"公告说增长50%"（谁都知道），而是告诉你<strong style="color:var(--text-primary)">市场只预期20%，公告50%，预期差+30%</strong></p>
+        <p>超预期个股公告后5-10日仍有正向超额收益</p>
+        <span class="tag tag-blue">核心 alpha</span>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-green)">🛡️ 第二层：持仓风险预警</div>
+        <p>不帮你"找买入机会"，帮你<strong style="color:var(--text-primary)">守住已有利润</strong></p>
+        <p>你已有持仓 → 有明确场景 → 风险评估 → 减仓/止盈提醒</p>
+        <span class="tag tag-green">最易落地</span>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-purple)">🔗 第三层：信号共振检测</div>
+        <p>单个信号确实滞后，但<strong style="color:var(--text-primary)">多个信号在短时间内集中出现</strong>，往往意味着趋势还没被充分定价</p>
+        <span class="tag tag-purple">对抗滞后</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 2: 空间策略 -->
+  <div class="section" id="s2">
+    <div class="section-number">SECTION 02</div>
+    <h2>空间策略：热点板块聚焦</h2>
+
+    <h3>2.1 为什么不全市场扫描？</h3>
+
+    <div class="callout callout-warning">
+      <strong>现实考量：</strong>A股5000+股票全扫描 = 高成本 + 低信噪比。A股是情绪市场，冷门板块的公告没人看，热点板块的公告被放大反应。同样的"业绩预增50%"，在冷门板块涨2%就结束，在热点板块可能直接涨停。
+    </div>
+
+    <h3>2.2 动态板块池设计</h3>
+
+    <div class="flow-block">全市场板块池（动态筛选，每周更新）
+│
+├─ 热度量化评分 = f(近5日涨幅, 涨停密度, 换手率偏离, 资金集中度)
+│
+├─ Top 5-8 板块 → 进入「重点监控池」（约 50-150 只股票）
+│    ├─ 当前热门板块（如：AI算力、低空经济）
+│    └─ 曾经热门+可能回流的板块（如：新能源、半导体）
+│
+├─ 衰减期板块 → 进入「观察池」（再跟踪 1-2 周）
+│
+└─ 冷门板块 → 不跟踪，省成本</div>
+
+    <h3>2.3 板块热度量化评分</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>计算方式</th>
+          <th>权重</th>
+          <th>数据源</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>近涨幅</td>
+          <td>板块近5日累计涨跌幅</td>
+          <td>30%</td>
+          <td>AKShare</td>
+        </tr>
+        <tr>
+          <td>涨停密度</td>
+          <td>板块内涨停家数 / 板块总家数</td>
+          <td>25%</td>
+          <td>AKShare</td>
+        </tr>
+        <tr>
+          <td>换手率偏离</td>
+          <td>当前换手率 / 20日平均换手率</td>
+          <td>20%</td>
+          <td>AKShare</td>
+        </tr>
+        <tr>
+          <td>资金集中度</td>
+          <td>板块成交额 / 全市场成交额</td>
+          <td>15%</td>
+          <td>AKShare</td>
+        </tr>
+        <tr>
+          <td>北向资金偏好</td>
+          <td>板块内北向资金净买入额</td>
+          <td>10%</td>
+          <td>AKShare</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 3: 时间策略 -->
+  <div class="section" id="s3">
+    <div class="section-number">SECTION 03</div>
+    <h2>时间策略：三层信号体系</h2>
+
+    <h3>3.1 信号分层架构</h3>
+
+    <p>盾不能只在"有公告的日子"才亮。三层信号保证每天都有防守依据：</p>
+
+    <div class="card highlight">
+      <div class="card-title">🏗️ 综合风险评分架构</div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>层级</th>
+            <th>信号类型</th>
+            <th>频率</th>
+            <th>权重</th>
+            <th>内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-blue">第三层</span></td>
+            <td>公告信号</td>
+            <td>一周 0-2 次</td>
+            <td>40%</td>
+            <td>持仓股自身公告 → 预期差分析</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-purple">第二层</span></td>
+            <td>关联传导信号</td>
+            <td>一周 3-5 次</td>
+            <td>25%</td>
+            <td>同板块其他票公告/异动 → 传导风险评估</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">第一层</span></td>
+            <td>日频情绪+资金信号</td>
+            <td>每天</td>
+            <td>35%</td>
+            <td>板块情绪 + 资金流向 + 技术面风险 + 分化检测</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>3.2 第一层信号详细构成</h3>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">板块级信号</div>
+        <table>
+          <tbody>
+            <tr><td>板块涨跌幅 vs 大盘</td><td>判断板块强弱</td></tr>
+            <tr><td>板块涨停/跌停家数</td><td>情绪温度计</td></tr>
+            <tr><td>板块换手率变化</td><td>资金是否撤退</td></tr>
+            <tr><td>板块龙头股走势</td><td>龙头不倒板块不倒</td></tr>
+            <tr><td>板块内涨幅离散度</td><td>一致性是否瓦解</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">个股级信号</div>
+        <table>
+          <tbody>
+            <tr><td>北向资金流向</td><td>聪明钱动向</td></tr>
+            <tr><td>主力资金净流入/流出</td><td>资金面判断</td></tr>
+            <tr><td>换手率突变</td><td>比5日均量放大2倍+</td></tr>
+            <tr><td>关键技术位破位</td><td>跌破20日线、放量阴线</td></tr>
+            <tr><td>龙虎榜数据</td><td>机构席位出现</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>3.3 无公告日的典型场景</h3>
+
+    <div class="grid-3">
+      <div class="card danger">
+        <div class="card-title">⚠️ 场景A：情绪退潮</div>
+        <p><strong style="color:var(--text-primary)">触发条件：</strong></p>
+        <p>• 涨停家数：8→2（情绪降温）</p>
+        <p>• 换手率：5.2%→3.8%（资金撤退）</p>
+        <p>• 龙头高开低走（疲态）</p>
+        <p>• 北向净流出2.3亿</p>
+        <p style="color:var(--accent-red);font-weight:600">风险评分：7/10 → 建议减仓1/3</p>
+      </div>
+      <div class="card warning">
+        <div class="card-title">⚡ 场景B：关联传导</div>
+        <p><strong style="color:var(--text-primary)">触发条件：</strong></p>
+        <p>• 同板块B票发减持公告</p>
+        <p>• 另2只票龙虎榜机构净卖出</p>
+        <p>• 板块跌1.5%（大盘仅0.3%）</p>
+        <p style="color:var(--accent-yellow);font-weight:600">风险评分：6/10 → 关注关联风险</p>
+      </div>
+      <div class="card" style="border-color:var(--accent-green)">
+        <div class="card-title">✅ 场景C：一切正常</div>
+        <p><strong style="color:var(--text-primary)">触发条件：</strong></p>
+        <p>• 板块涨1.2%（大盘0.3%）</p>
+        <p>• 北向净流入1.8亿</p>
+        <p>• 龙头稳步上涨，量价配合</p>
+        <p>• 均在20日线上方</p>
+        <p style="color:var(--accent-green);font-weight:600">风险评分：2/10 → 安心持有</p>
+      </div>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>盾的价值不只是"告诉你危险"，也包括"告诉你安全"</strong>——减少焦虑性卖出，也是一种防守。
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 4: 板块生命周期 -->
+  <div class="section" id="s4">
+    <div class="section-number">SECTION 04</div>
+    <h2>板块生命周期识别</h2>
+
+    <h3>4.1 四阶段模型</h3>
+
+    <div class="lifecycle">
+      <div class="lifecycle-stage" style="background:rgba(34,211,238,0.08);border-radius:12px;">
+        <div class="icon">🌱</div>
+        <div class="name" style="color:var(--accent-cyan)">启动期</div>
+        <div class="desc">量升价稳<br>情绪升温<br><span class="tag tag-cyan">可介入</span></div>
+      </div>
+      <div class="lifecycle-arrow">→</div>
+      <div class="lifecycle-stage" style="background:rgba(52,211,153,0.08);border-radius:12px;">
+        <div class="icon">🔥</div>
+        <div class="name" style="color:var(--accent-green)">加速期</div>
+        <div class="desc">连续涨停<br>情绪过热<br><span class="tag tag-green">持有警惕</span></div>
+      </div>
+      <div class="lifecycle-arrow">→</div>
+      <div class="lifecycle-stage" style="background:rgba(251,191,36,0.08);border-radius:12px;">
+        <div class="icon">⚡</div>
+        <div class="name" style="color:var(--accent-yellow)">分化期</div>
+        <div class="desc">龙头强跟风弱<br>情绪分歧<br><span class="tag tag-yellow">减仓信号</span></div>
+      </div>
+      <div class="lifecycle-arrow">→</div>
+      <div class="lifecycle-stage" style="background:rgba(248,113,113,0.08);border-radius:12px;">
+        <div class="icon">📉</div>
+        <div class="name" style="color:var(--accent-red)">退潮期</div>
+        <div class="desc">龙头也跌<br>情绪崩溃<br><span class="tag tag-red">清仓防守</span></div>
+      </div>
+    </div>
+
+    <div class="callout callout-info">
+      <strong>关键洞察：</strong>板块从"加速"进入"分化"是整个系统最重要的防守信号之一——而这个判断完全不需要任何公告，仅依赖日频行情数据即可量化。
+    </div>
+
+    <h3>4.2 分化判断五大量化指标</h3>
+
+    <div class="card highlight">
+      <div class="card-title">指标一：板块内涨幅离散度 <span class="tag tag-blue">权重 30% · 最核心</span></div>
+      <p><strong style="color:var(--text-primary)">计算方式：</strong>板块内所有个股当日涨幅的标准差</p>
+      <table>
+        <thead><tr><th>阶段</th><th>龙头</th><th>跟风</th><th>后排</th><th>标准差</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-green">加速期</span></td><td>+6%</td><td>+4~5%</td><td>+2~3%</td><td>小（~1.5%）</td></tr>
+          <tr><td><span class="tag tag-yellow">分化期</span></td><td>+10%</td><td>+1%</td><td>-3%</td><td>大（~4.2%）</td></tr>
+        </tbody>
+      </table>
+      <p>触发条件：离散度突破近5日均值 + 2倍标准差（动态阈值，详见第5章）</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">指标二：涨停家数占比 <span class="tag tag-purple">权重 20%</span></div>
+      <p><strong style="color:var(--text-primary)">计算方式：</strong>板块内涨停家数 / 板块总家数</p>
+      <table>
+        <thead><tr><th>阶段</th><th>涨停占比</th><th>解读</th></tr></thead>
+        <tbody>
+          <tr><td>加速期</td><td>20%+（40只票8只涨停）</td><td>资金共识强</td></tr>
+          <tr><td>分化期</td><td>&lt;5%（只剩1-2只涨停）</td><td>只剩龙头撑场</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">指标三：板块内涨跌比 <span class="tag tag-purple">权重 20%</span></div>
+      <p><strong style="color:var(--text-primary)">计算方式：</strong>板块内上涨家数 : 下跌家数</p>
+      <table>
+        <thead><tr><th>阶段</th><th>涨跌比</th><th>解读</th></tr></thead>
+        <tbody>
+          <tr><td>加速期</td><td>8:2 以上</td><td>多数票在涨</td></tr>
+          <tr><td>分化期</td><td>5:5 甚至更低</td><td>板块已分裂</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">指标四：龙头偏离度 <span class="tag tag-cyan">权重 15%</span></div>
+      <p><strong style="color:var(--text-primary)">计算方式：</strong>龙头股涨幅 - 板块平均涨幅</p>
+      <table>
+        <thead><tr><th>阶段</th><th>偏离度</th><th>解读</th></tr></thead>
+        <tbody>
+          <tr><td>加速期</td><td>龙头多涨3%（合理领先）</td><td>龙头带着板块走</td></tr>
+          <tr><td>分化期</td><td>龙头多涨8%+</td><td>龙头独立走妖，板块已脱节</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-title">指标五：量价背离 <span class="tag tag-cyan">权重 15%</span></div>
+      <p><strong style="color:var(--text-primary)">计算方式：</strong>板块指数涨幅 vs 板块总成交额变化</p>
+      <table>
+        <thead><tr><th>阶段</th><th>指数</th><th>成交额</th><th>解读</th></tr></thead>
+        <tbody>
+          <tr><td>加速期</td><td>涨3%</td><td>增40%</td><td>量价齐升，健康</td></tr>
+          <tr><td>分化期</td><td>涨1%</td><td>降20%</td><td>量价背离，危险</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>4.3 分化综合评分规则</h3>
+
+    <div class="flow-block">分化评分 = Σ(指标权重 × 该指标是否触发)
+
+示例：某日（震荡态）
+┌─────────────┬────────┬──────────────┬─────────┐
+│ 指标        │ 当前值 │ 震荡态百分位 │ 触发?   │
+├─────────────┼────────┼──────────────┼─────────┤
+│ 离散度  30% │ 3.4%   │ P92          │ ✅ 触发 │
+│ 涨停占比 20%│ 3%     │ P88          │ ✅ 触发 │
+│ 涨跌比  20% │ 1.2:1  │ P85          │ ✅ 触发 │
+│ 龙头偏离 15%│ 6%     │ P78          │ ❌ 未触发│
+│ 量价背离 15%│ 0.75倍 │ P70          │ ❌ 未触发│
+├─────────────┴────────┴──────────────┴─────────┤
+│ 分化评分 = 30%+20%+20% = 70/100               │
+│ → 板块进入分化期 → 防守信号触发                │
+└────────────────────────────────────────────────┘
+
+对比：同一天如果是"牛市态"
+┌─────────────┬────────┬──────────────┬─────────┐
+│ 离散度  30% │ 3.4%   │ P68          │ ❌ 未触发│  ← 牛市中3.4%很正常
+│ 涨停占比 20%│ 3%     │ P55          │ ❌ 未触发│  ← 牛市中3%涨停很正常
+│ 涨跌比  20% │ 1.2:1  │ P40          │ ❌ 未触发│
+├─────────────┴────────┴──────────────┴─────────┤
+│ 分化评分很低 → 牛市中这些指标值是健康的 → 无信号 │
+└────────────────────────────────────────────────┘</div>
+
+    <div class="callout callout-warning">
+      <strong>关键：</strong>同样的3.4%离散度，在震荡态是危险信号，在牛市态是正常状态——这就是动态阈值的价值！详见第5章。
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 5: 动态阈值方法论 -->
+  <div class="section" id="s5">
+    <div class="section-number">SECTION 05</div>
+    <h2>动态阈值方法论</h2>
+
+    <div class="callout callout-danger">
+      <strong>核心原则：</strong>指标阈值不凭空设想，不使用固定数字。用历史百分位法动态计算，并按市场状态（牛/熊/震荡）分层自适应。
+    </div>
+
+    <h3>5.1 市场状态客观分类</h3>
+
+    <p>不主观判断"我觉得是牛市"，用四个量化指标自动分类：</p>
+
+    <table>
+      <thead>
+        <tr><th>维度</th><th>计算方式</th><th>牛市态</th><th>熊市态</th><th>震荡态</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>趋势方向</td>
+          <td>上证收盘 vs 20日均线</td>
+          <td style="color:var(--accent-green)">价格 > 均线+2%</td>
+          <td style="color:var(--accent-red)">价格 < 均线-2%</td>
+          <td>其他</td>
+        </tr>
+        <tr>
+          <td>市场广度</td>
+          <td>全A上涨家数占比20日均值</td>
+          <td style="color:var(--accent-green)">> 60%</td>
+          <td style="color:var(--accent-red)">< 40%</td>
+          <td>40%-60%</td>
+        </tr>
+        <tr>
+          <td>成交活跃度</td>
+          <td>全A成交额 / 过去250日均值</td>
+          <td style="color:var(--accent-green)">> 1.5倍</td>
+          <td style="color:var(--accent-red)">< 0.7倍</td>
+          <td>0.7-1.5倍</td>
+        </tr>
+        <tr>
+          <td>波动率</td>
+          <td>上证20日收益率标准差</td>
+          <td>正常波动</td>
+          <td>高波动(>P80)或低波动(<P20)</td>
+          <td>正常</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="flow-block">自动判定规则：
+  趋势↑ + 广度宽 + 活跃      → 牛市态
+  趋势↓ + 广度窄 + 萎缩      → 熊市态
+  其他组合                   → 震荡态（细分强震荡/弱震荡）</div>
+
+    <h3>5.2 历史百分位法</h3>
+
+    <p>在每种市场状态下，统计各指标的历史分布，用百分位作为动态阈值：</p>
+
+    <div class="card highlight">
+      <div class="card-title">示例：板块涨幅离散度的历史分布</div>
+      <p>过去5年所有交易日（约1200天），按市场状态分层：</p>
+
+      <table>
+        <thead>
+          <tr><th>市场状态</th><th>天数</th><th>P25</th><th>P50</th><th>P75</th><th style="color:var(--accent-yellow)">P90（触发线）</th><th>P95</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-green">牛市态</span></td>
+            <td>300天</td>
+            <td>1.8%</td><td>2.5%</td><td>3.2%</td>
+            <td style="color:var(--accent-yellow);font-weight:700">4.1%</td><td>5.0%</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">熊市态</span></td>
+            <td>250天</td>
+            <td>2.1%</td><td>2.8%</td><td>3.5%</td>
+            <td style="color:var(--accent-yellow);font-weight:700">4.3%</td><td>5.2%</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-blue">震荡态</span></td>
+            <td>650天</td>
+            <td>1.5%</td><td>2.0%</td><td>2.8%</td>
+            <td style="color:var(--accent-yellow);font-weight:700">3.6%</td><td>4.5%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="color:var(--accent-yellow);margin-top:12px">⚡ 注意：牛市离散度整体偏高，4%在牛市是常态，在震荡态是极端值——固定阈值不可行！</p>
+    </div>
+
+    <h3>5.3 每日计算流程</h3>
+
+    <div class="flow-block">1. 判断今日市场状态（4指标自动分类）
+2. 对每个跟踪板块，计算5个量化指标的当前值
+3. 对照当前市场状态下的历史分布，计算每个指标的百分位
+4. 百分位 > P85 → 该指标触发
+5. 按权重汇总为"分化评分"
+6. 评分 ≥ 70 → 板块进入分化期 → 防守信号触发</div>
+
+    <h3>5.4 验证闭环</h3>
+
+    <div class="card warning">
+      <div class="card-title">🔄 阈值不是"定了就完"，必须有验证闭环</div>
+      <div class="flow-block">1. 用历史5年数据计算所有交易日的分化评分
+2. 标记所有评分≥70的日期
+3. 回测：这些日期之后3日/5日板块超额收益是否显著为负？
+4. 如果不显著 → 调整触发百分位（如 P85→P90）
+5. 如果显著   → 当前设定有效
+6. 每季度重新统计+验证，阈值随市场结构变化而进化
+
+预期目标：
+  - 分化信号触发后3日，板块超额收益为负的概率 > 60%
+  - 信号触发准确率（真正分化的占比）> 50%
+  - 作为防守信号：宁可多预警，不可漏预警</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 6: 预期差分析 -->
+  <div class="section" id="s6">
+    <div class="section-number">SECTION 06</div>
+    <h2>预期差分析体系</h2>
+
+    <p>预期差是"盾"最锋利的部分——不是公告数字本身，而是公告与市场预期的偏差。</p>
+
+    <h3>6.1 完整版 vs MVP降级方案</h3>
+
+    <table>
+      <thead>
+        <tr><th>方案</th><th>对比基准</th><th>精度</th><th>数据可用性</th><th>成本</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-red">完整版</span></td>
+          <td>公告值 vs 券商一致预期</td>
+          <td>最高</td>
+          <td>❌ 需 Wind/iFinD</td>
+          <td>几万/年</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-yellow">方案A</span></td>
+          <td>公告值 vs 行业均值</td>
+          <td>中等</td>
+          <td>⚠️ AKShare可算</td>
+          <td>免费</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">方案B</span></td>
+          <td>公告值 vs 公司历史趋势</td>
+          <td>中等</td>
+          <td>✅ AKShare完整</td>
+          <td>免费</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-green">方案C</span></td>
+          <td>公告值 vs 股价隐含预期</td>
+          <td>较高</td>
+          <td>✅ AKShare完整</td>
+          <td>免费</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>6.2 MVP推荐组合：方案B + 方案C</h3>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">方案B：历史自身趋势对比</div>
+        <p><strong style="color:var(--text-primary)">逻辑：</strong>公告增速50% vs 该公司过去3年平均增速20% → 自身差+30%</p>
+        <p>历史数据 AKShare 完整覆盖</p>
+        <span class="tag tag-blue">免费可用</span>
+      </div>
+      <div class="card highlight">
+        <div class="card-title">方案C：股价隐含预期反推 ⭐推荐</div>
+        <p><strong style="color:var(--text-primary)">逻辑：</strong>如果股价在公告前已涨30%，市场隐含预期已经很高</p>
+        <p>公告增速50%但市场可能已预期60% → 实际低于预期</p>
+        <p>用<strong style="color:var(--accent-blue)">公告前20日涨幅</strong>作为"市场隐含预期"的代理变量</p>
+        <span class="tag tag-green">最巧妙·免费可用</span>
+      </div>
+    </div>
+
+    <div class="callout callout-success">
+      <strong>方案C 的核心价值：</strong>不需要外部预期数据，从股价本身反推市场隐含预期——这是"用市场自己的语言来判断市场预期"的思路，数据完全免费可用。
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 7: 国际事件 -->
+  <div class="section" id="s7">
+    <div class="section-number">SECTION 07</div>
+    <h2>国际事件影响通道</h2>
+
+    <p>只关注国内信息是不够的，明明没问题但国际消息导致下跌——这是A股的现实。</p>
+
+    <h3>7.1 四条影响通道</h3>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-blue)">💱 通道1：资金通道</div>
+        <p>美联储利率决议 → 美元走强 → 北向资金流出</p>
+        <p>美债收益率飙升 → 全球资金回流美元</p>
+        <p><strong style="color:var(--text-primary)">影响：</strong>消费/医药/白马股（外资重仓板块）</p>
+        <p><strong style="color:var(--text-primary)">不影响：</strong>纯内需/国产替代/题材股</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-green)">📊 通道2：汇率通道</div>
+        <p>人民币贬值 → 出口型企业受益（纺织/电子代工）</p>
+        <p>人民币贬值 → 外资持仓缩水 → 减持压力</p>
+        <p><strong style="color:var(--text-primary)">影响：</strong>因板块而异，需要双向判断</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-purple)">🔗 通道3：产业链通道</div>
+        <p>美对华芯片禁令升级 → 半导体国产替代反而利好</p>
+        <p>大宗商品暴跌 → 上游资源股承压</p>
+        <p>全球新能源政策 → 电动车/光伏出口链影响</p>
+        <p><strong style="color:var(--text-primary)">影响：</strong>板块特定，需"事件→板块"映射</p>
+      </div>
+      <div class="card">
+        <div class="card-title" style="color:var(--accent-orange)">😰 通道4：情绪通道</div>
+        <p>美股暴跌 → A股低开（次日开盘情绪传导）</p>
+        <p>地缘冲突升级 → 全球Risk-off → A股避险</p>
+        <p><strong style="color:var(--text-primary)">影响：</strong>短期开盘冲击，A股通常30分钟内消化</p>
+      </div>
+    </div>
+
+    <h3>7.2 落地策略：不是监控所有新闻</h3>
+
+    <div class="card">
+      <div class="card-title">三层国际信息监控策略</div>
+
+      <table>
+        <thead><tr><th>策略</th><th>方式</th><th>频率</th><th>覆盖内容</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="tag tag-blue">关键事件日历</span></td>
+            <td>手动维护+网页爬取</td>
+            <td>提前1天预警</td>
+            <td>美联储议息、非农、OPEC、中美会议</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-green">隔夜外盘快照</span></td>
+            <td>yfinance + AKShare</td>
+            <td>每日 8:00</td>
+            <td>美股三大指数、美债、美元、汇率、大宗、VIX</td>
+          </tr>
+          <tr>
+            <td><span class="tag tag-red">突发事件评估</span></td>
+            <td>LLM即时评估</td>
+            <td>事件触发</td>
+            <td>制裁、地缘冲突、黑天鹅</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>7.3 事件→板块影响映射表（系统预置知识）</h3>
+
+    <table>
+      <thead><tr><th>国际事件</th><th>影响通道</th><th>风险板块</th><th>受益板块</th></tr></thead>
+      <tbody>
+        <tr><td>美联储加息</td><td>资金</td><td><span class="tag tag-red">消费、医药、白马股</span></td><td><span class="tag tag-green">银行</span></td></tr>
+        <tr><td>美对华科技制裁</td><td>产业链</td><td><span class="tag tag-red">消费电子(出口链)</span></td><td><span class="tag tag-green">半导体(国产替代)</span></td></tr>
+        <tr><td>原油暴跌</td><td>产业链</td><td><span class="tag tag-red">石油开采</span></td><td><span class="tag tag-green">化工、航空</span></td></tr>
+        <tr><td>人民币贬值</td><td>汇率</td><td><span class="tag tag-red">外资重仓股</span></td><td><span class="tag tag-green">纺织、电子代工</span></td></tr>
+        <tr><td>VIX飙升</td><td>情绪</td><td><span class="tag tag-red">全市场(短期)</span></td><td><span class="tag tag-green">黄金、国防</span></td></tr>
+        <tr><td>全球新能源政策利好</td><td>产业链</td><td>—</td><td><span class="tag tag-green">光伏、锂电、新能源车</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 8: 运行机制 -->
+  <div class="section" id="s8">
+    <div class="section-number">SECTION 08</div>
+    <h2>运行机制设计</h2>
+
+    <h3>8.1 为什么不是24h实时监控？</h3>
+
+    <div class="grid-2">
+      <div class="card danger">
+        <div class="card-title">❌ 24h实时监控的问题</div>
+        <p>• 成本高：服务器+数据流+API调用24h运行</p>
+        <p>• 效率低：A股非交易时段没有行情数据</p>
+        <p>• 价值低：凌晨3点推送你也不会操作</p>
+        <p>• 关键信息不需要实时：公告盘后发，外盘影响盘前评估</p>
+      </div>
+      <div class="card" style="border-color:var(--accent-green)">
+        <div class="card-title">✅ 定时驱动 + 事件触发的优势</div>
+        <p>• 成本可控：只在关键时间节点运行</p>
+        <p>• 信号精选：不是什么垃圾信息都推</p>
+        <p>• 用户友好：在用户最需要决策的时刻推送</p>
+        <p>• 事件触发保证重大事件不遗漏</p>
+      </div>
+    </div>
+
+    <h3>8.2 每日运行时间线</h3>
+
+    <div class="timeline">
+      <div class="timeline-item alert">
+        <div class="time">05:00</div>
+        <div class="content"><strong>美股收盘数据处理</strong> — 三大指数、美债、汇率、大宗商品</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">08:00</div>
+        <div class="content">📋 <strong>盘前简报推送</strong> — 昨夜外盘影响评估 + 今晨公告扫描 + 持仓股风险评分更新 + 今日关注事项</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">10:30</div>
+        <div class="content">🔍 <strong>早盘情绪快照</strong> — 板块情绪温度计（开盘1小时数据） + 北向资金实时流向初判 + 异动信号检测</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">14:00</div>
+        <div class="content">⚠️ <strong>午盘分化检测</strong> — 板块分化指标更新 + 尾盘是否需要操作 + <strong style="color:var(--accent-yellow)">最重要的防守判断窗口</strong></div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">15:30</div>
+        <div class="content">📊 <strong>盘后总结</strong> — 今日信号回顾 + 板块热度排名更新 + 明日风险预判 + 板块池调整</div>
+      </div>
+      <div class="timeline-item">
+        <div class="time">20:00</div>
+        <div class="content">📰 <strong>晚间公告处理</strong> — 巨潮晚间公告批量扫描 + 重要公告即时解读 + 更新明日风险评分</div>
+      </div>
+    </div>
+
+    <div class="callout callout-danger">
+      <strong>🚨 事件触发推送（随时）：</strong>持仓股重大公告（减持/重组/业绩预告）→ 即时推送 · 重大国际事件（美联储、地缘冲突）→ 即时推送 · 板块内关联票异动传导 → 盘中即时推送
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 9: 数据源 -->
+  <div class="section" id="s9">
+    <div class="section-number">SECTION 09</div>
+    <h2>数据源架构</h2>
+
+    <h3>9.1 数据源覆盖评估</h3>
+
+    <table>
+      <thead>
+        <tr><th>数据类别</th><th>AKShare</th><th>BaoStock</th><th>yfinance</th><th>额外处理</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A股日线行情(OHLCV)</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>板块成分股</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>板块行情指数</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>北向资金日频</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>龙虎榜明细</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>全A涨跌家数</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>个股资金流向</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>融资融券数据</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>无</td>
+        </tr>
+        <tr style="background:rgba(251,191,36,0.05)">
+          <td>公告数据(巨潮)</td>
+          <td style="color:var(--accent-yellow)">⚠️部分</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>需爬取巨潮网页</td>
+        </tr>
+        <tr style="background:rgba(251,191,36,0.05)">
+          <td>机构调研数据</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td>需爬取东财网页</td>
+        </tr>
+        <tr style="background:rgba(248,113,113,0.05)">
+          <td>券商一致预期</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>—</td>
+          <td style="color:var(--accent-red);font-weight:600">⚠️核心缺失</td>
+        </tr>
+        <tr>
+          <td>美股指数/行情</td>
+          <td style="color:var(--accent-green)">✅部分</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>美债收益率</td>
+          <td style="color:var(--accent-green)">✅部分</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-yellow)">⚠️</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>美元指数/人民币汇率</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td>无</td>
+        </tr>
+        <tr>
+          <td>大宗商品/ VIX</td>
+          <td style="color:var(--accent-green)">✅部分</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-green)">✅</td>
+          <td>无</td>
+        </tr>
+        <tr style="background:rgba(251,191,36,0.05)">
+          <td>国际事件日历</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td style="color:var(--accent-red)">❌</td>
+          <td>手动维护+部分爬取</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>9.2 免费覆盖率 & 付费需求</h3>
+
+    <div class="grid-3">
+      <div class="card" style="border-color:var(--accent-green)">
+        <div class="card-title" style="color:var(--accent-green)">✅ 完全免费覆盖 ~75%</div>
+        <p>日线行情、板块数据 → AKShare</p>
+        <p>北向资金、龙虎榜 → AKShare</p>
+        <p>全A涨跌家数 → AKShare</p>
+        <p>外盘数据 → yfinance</p>
+        <p>基础公告 → AKShare+巨潮</p>
+      </div>
+      <div class="card warning">
+        <div class="card-title" style="color:var(--accent-yellow)">⚠️ 需额外处理 ~5%</div>
+        <p>公告全文 → 巨潮资讯网页爬取</p>
+        <p>机构调研 → 东方财富网页爬取</p>
+        <p>国际事件日历 → 手动维护+部分爬取</p>
+      </div>
+      <div class="card danger">
+        <div class="card-title" style="color:var(--accent-red)">🔴 核心缺失 ~20%</div>
+        <p>券商一致预期数据</p>
+        <p>Wind/iFinD → 几万/年（不现实）</p>
+        <p>tushare pro → ~5000元/年</p>
+        <p>MVP降级方案可绕过</p>
+      </div>
+    </div>
+
+    <h3>9.3 分阶段数据投入</h3>
+
+    <table>
+      <thead><tr><th>阶段</th><th>数据源</th><th>成本</th><th>覆盖</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="tag tag-green">MVP阶段</span></td>
+          <td>AKShare + BaoStock + yfinance + 巨潮爬取 + 东财爬取</td>
+          <td style="color:var(--accent-green);font-weight:700">0元</td>
+          <td>80%+ 功能</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-blue">升级阶段</span></td>
+          <td>+ tushare pro 二级积分</td>
+          <td style="color:var(--accent-yellow);font-weight:700">~5000元/年</td>
+          <td>补充一致预期+更高质量数据</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-red">不推荐</span></td>
+          <td>Wind / iFinD</td>
+          <td style="color:var(--accent-red);font-weight:700">几万/年</td>
+          <td>个人/小团队不现实</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 10: MVP规划 -->
+  <div class="section" id="s10">
+    <div class="section-number">SECTION 10</div>
+    <h2>MVP 阶段规划</h2>
+
+    <div class="flow-block">Phase 1 🎯 板块热度识别 + 市场状态分类（2周）
+  ├── 用AKShare获取板块数据 + 个股行情
+  ├── 实现市场状态自动分类（4指标 → 牛/熊/震荡）
+  ├── 实现板块热度评分 → 动态板块池（5-8个板块）
+  └── 输出：每日板块池列表 + 市场状态判定
+
+Phase 2 📊 日频信号采集 + 分化检测（2周）
+  ├── 实现分化五指标计算（离散度/涨停比/涨跌比/龙头偏离/量价背离）
+  ├── 实现历史百分位统计引擎
+  ├── 实现动态阈值计算（按市场状态分层）
+  ├── 板块情绪温度计 + 北向资金流向
+  └── 输出：每日板块分化评分 + 风险评分
+
+Phase 3 🛡️ 持仓风险雷达 + 推送系统（2周）
+  ├── 持仓股管理（用户输入持仓）
+  ├── 综合风险评分（三层信号权重汇总）
+  ├── 定时推送机制（8:00/10:30/14:00/15:30/20:00）
+  └── 输出：每日风险报告 + 行动建议
+
+Phase 4 📰 公告预期差 + 国际通道（2周）
+  ├── 巨潮公告爬取 + LLM解读
+  ├── 预期差计算（MVP降级方案：历史对比+股价反推）
+  ├── 隔夜外盘快照 + 国际事件映射
+  └── 输出：公告解读 + 国际影响评估
+
+Phase 5 🔗 信号共振 + 关联传导（1周）
+  ├── 多信号共振检测（3+信号同时出现）
+  ├── 同板块关联风险传导
+  ├── 验证闭环（历史回测验证阈值有效性）
+  └── 输出：信号共振预警 + 关联风险提醒</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Section 11: 风险与限制 -->
+  <div class="section" id="s11">
+    <div class="section-number">SECTION 11</div>
+    <h2>风险与限制</h2>
+
+    <div class="card danger">
+      <div class="card-title">⚠️ 合规红线</div>
+      <p>系统定位为<strong style="color:var(--accent-red)">"信息辅助工具"</strong>，而非"投资建议"——后者需要投顾牌照。所有推送内容应使用"建议关注/评估/考虑"等措辞，避免"建议买入/卖出"等确定性指令。</p>
+    </div>
+
+    <div class="card warning">
+      <div class="card-title">⚠️ LLM 数字幻觉</div>
+      <p>大模型对数字敏感度不够，关键数值（增速百分比、资金净额）必须<strong style="color:var(--accent-yellow)">结构化验证</strong>，不能纯靠 LLM 输出。所有关键数字应从数据源直接提取，LLM 只负责"解读"而非"计算"。</p>
+    </div>
+
+    <div class="card warning">
+      <div class="card-title">⚠️ 数据延迟</div>
+      <p>免费数据源通常15分钟延迟，对短线交易不够用。系统定位为<strong style="color:var(--accent-yellow)">"日频防守"</strong>而非"分钟级交易"，延迟影响可控。</p>
+    </div>
+
+    <div class="card warning">
+      <div class="card-title">⚠️ 历史回测 ≠ 未来</div>
+      <p>历史回测表现不代表未来收益。所有基于历史统计的阈值和评分都有失效的可能。务必在推送中加免责声明。</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 数据爬取合规</div>
+      <p>巨潮资讯和东方财富网页爬取处于合规灰色地带。建议控制爬取频率（非高峰期），仅用于个人研究，不做商业分发。</p>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Footer -->
+  <div style="text-align:center;padding:40px 0;color:var(--text-muted);font-size:13px;">
+    <p>热点板块风险雷达 · 系统设计方案 v1.0</p>
+    <p>这是盾，不是矛 — 做防守，不做进攻</p>
+    <p style="margin-top:16px">2026.06</p>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const navLinks = document.querySelectorAll('.sidebar a');
+  const sections = [];
+  const sectionMap = new Map();
+
+  // Build section list from nav links
+  navLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) {
+      sections.push({ id, el, link });
+      sectionMap.set(id, { el, link });
+    }
+  });
+
+  // Active link tracking
+  let activeLink = null;
+
+  function updateActiveLink() {
+    const scrollTop = window.scrollY;
+    const windowHeight = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
+
+    // Find the current section — the last one whose top is above the viewport center
+    const triggerLine = scrollTop + windowHeight * 0.25;
+    let current = null;
+
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const rect = sections[i].el.getBoundingClientRect();
+      const top = rect.top + scrollTop;
+      if (top <= triggerLine) {
+        current = sections[i];
+        break;
+      }
+    }
+
+    // If we're near the very top, highlight the hero link
+    if (!current && scrollTop < 100) {
+      current = sections[0];
+    }
+
+    // If we're at the very bottom, highlight the last section
+    if (!current && scrollTop + windowHeight >= docHeight - 50) {
+      current = sections[sections.length - 1];
+    }
+
+    if (current && current.link !== activeLink) {
+      // Remove previous active
+      if (activeLink) activeLink.classList.remove('active');
+      // Set new active
+      current.link.classList.add('active');
+      activeLink = current.link;
+
+      // Scroll sidebar to keep active link visible
+      const sidebar = document.querySelector('.sidebar');
+      const linkRect = current.link.getBoundingClientRect();
+      const sidebarRect = sidebar.getBoundingClientRect();
+      if (linkRect.top < sidebarRect.top + 40 || linkRect.bottom > sidebarRect.bottom - 40) {
+        sidebar.scrollTo({
+          top: current.link.offsetTop - sidebar.clientHeight / 2 + 20,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+
+  // Throttle scroll events
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateActiveLink();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Also update on resize
+  window.addEventListener('resize', function() {
+    if (!ticking) {
+      requestAnimationFrame(function() {
+        updateActiveLink();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+
+  // Initial state
+  updateActiveLink();
+
+  // Smooth scroll on nav click — close any mobile menu feel
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const id = this.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - 20;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>    
+
+
+
