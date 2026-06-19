@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 早报 · 7 天主题预览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif; background: #f5f5f7; padding: 40px 20px; }
+  .page-header { max-width: 1000px; margin: 0 auto 40px; text-align: center; }
+  .page-header h1 { font-size: 28px; color: #1a1a1a; }
+  .page-header p { color: #666; margin-top: 8px; font-size: 14px; }
+  .day-tabs { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin: 20px 0 10px; }
+  .day-tab { padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid #ddd; transition: all .2s; background: #fff; }
+  .day-tab.active { border-color: #2563EB; background: #eff6ff; color: #2563EB; }
+  .day-tab:hover { border-color: #999; }
+  .theme-grid { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 30px; }
+  .theme-card { border-radius: 16px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.08); transition: box-shadow .3s; }
+  .theme-card:hover { box-shadow: 0 4px 32px rgba(0,0,0,0.12); }
+  .theme-label { padding: 16px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(0,0,0,0.06); background: #fafafa; }
+  .theme-label .day { font-size: 13px; font-weight: 700; background: #e8e8ed; padding: 2px 10px; border-radius: 10px; }
+  .theme-label .name { font-size: 16px; font-weight: 700; }
+  .theme-label .tagline { font-size: 12px; color: #888; margin-left: auto; }
+  .article-preview { max-width: 680px; margin: 0 auto; padding: 28px 24px; }
+
+  /* ========== 7 个主题 ========== */
+
+  /* ① 周一 · 极简科技 */
+  .theme-tech { --h1: #1a1a1a; --h2: #2563EB; --h3: #1e293b; --body: #334155; --sec: #94a3b8; --line: #e2e8f0; --bg: #ffffff; --summary-bg: #f0f4ff; }
+  .theme-tech .article-preview { background: var(--bg); }
+  .theme-tech .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-tech .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-tech .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-tech .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-tech .article-preview .item { margin-bottom: 16px; }
+  .theme-tech .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-tech .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-tech .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-tech .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-tech .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-tech .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ② 周二 · 暖心橙 */
+  .theme-orange { --h1: #1a1a1a; --h2: #EA580C; --h3: #431407; --body: #3f3f46; --sec: #a1a1aa; --line: #fed7aa; --bg: #ffffff; --summary-bg: #fff7ed; }
+  .theme-orange .article-preview { background: var(--bg); }
+  .theme-orange .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-orange .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-orange .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-orange .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-orange .article-preview .item { margin-bottom: 16px; }
+  .theme-orange .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-orange .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-orange .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-orange .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-orange .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-orange .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ③ 周三 · 薰衣草 */
+  .theme-lavender { --h1: #1a1a1a; --h2: #7C3AED; --h3: #2e1065; --body: #3f3f46; --sec: #a1a1aa; --line: #ddd6fe; --bg: #ffffff; --summary-bg: #f5f3ff; }
+  .theme-lavender .article-preview { background: var(--bg); }
+  .theme-lavender .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-lavender .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-lavender .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-lavender .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-lavender .article-preview .item { margin-bottom: 16px; }
+  .theme-lavender .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-lavender .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-lavender .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-lavender .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-lavender .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-lavender .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ④ 周四 · 极光绿 */
+  .theme-green { --h1: #1a1a1a; --h2: #059669; --h3: #064e3b; --body: #374151; --sec: #9ca3af; --line: #a7f3d0; --bg: #ffffff; --summary-bg: #ecfdf5; }
+  .theme-green .article-preview { background: var(--bg); }
+  .theme-green .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-green .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-green .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-green .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-green .article-preview .item { margin-bottom: 16px; }
+  .theme-green .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-green .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-green .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-green .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-green .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-green .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ⑤ 周五 · 红韵 */
+  .theme-red { --h1: #1a1a1a; --h2: #DC2626; --h3: #450a0a; --body: #3f3f46; --sec: #a1a1aa; --line: #fecaca; --bg: #ffffff; --summary-bg: #fef2f2; }
+  .theme-red .article-preview { background: var(--bg); }
+  .theme-red .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-red .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-red .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-red .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-red .article-preview .item { margin-bottom: 16px; }
+  .theme-red .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-red .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-red .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-red .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-red .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-red .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ⑥ 周六 · 莫兰迪 */
+  .theme-morandi { --h1: #1a1a1a; --h2: #9D6B7E; --h3: #4a3f44; --body: #57534e; --sec: #a8a29e; --line: #e6d5d0; --bg: #ffffff; --summary-bg: #faf5f6; }
+  .theme-morandi .article-preview { background: var(--bg); }
+  .theme-morandi .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-morandi .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-morandi .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-morandi .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-morandi .article-preview .item { margin-bottom: 16px; }
+  .theme-morandi .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-morandi .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-morandi .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-morandi .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-morandi .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-morandi .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  /* ⑦ 周日 · 深邃蓝 (深色) */
+  .theme-darkblue { --h1: #ffffff; --h2: #60A5FA; --h3: #e2e8f0; --body: #cbd5e1; --sec: #64748b; --line: #1e293b; --bg: #0f172a; --summary-bg: #1e293b; }
+  .theme-darkblue .article-preview { background: var(--bg); }
+  .theme-darkblue .article-preview h1 { font-size: 20px; font-weight: 700; color: var(--h1); line-height: 1.4; }
+  .theme-darkblue .article-preview .date { font-size: 13px; color: var(--sec); margin: 6px 0 16px; }
+  .theme-darkblue .article-preview hr { border: none; border-top: 1px solid var(--line); margin: 16px 0; }
+  .theme-darkblue .article-preview h2 { font-size: 17px; font-weight: 700; color: var(--h2); border-left: 3px solid var(--h2); padding-left: 10px; margin: 20px 0 14px; }
+  .theme-darkblue .article-preview .item { margin-bottom: 16px; }
+  .theme-darkblue .article-preview .item h3 { font-size: 15px; font-weight: 600; color: var(--h3); margin-bottom: 4px; }
+  .theme-darkblue .article-preview .item p { font-size: 14px; color: var(--body); line-height: 1.75; }
+  .theme-darkblue .article-preview .item .src { font-size: 12px; color: var(--sec); margin-top: 4px; }
+  .theme-darkblue .article-preview .src-list { font-size: 13px; color: var(--sec); line-height: 2; }
+  .theme-darkblue .article-preview .src-list a { color: var(--h2); text-decoration: none; }
+  .theme-darkblue .article-preview .footer { font-size: 13px; color: var(--sec); text-align: center; margin-top: 20px; font-style: italic; }
+
+  .toggle-all-wrap { text-align: center; margin: 0 0 24px; }
+  .toggle-all-btn { padding: 10px 28px; font-size: 14px; font-weight: 600; border-radius: 24px; border: none; background: #1a1a1a; color: #fff; cursor: pointer; transition: all .2s; }
+  .toggle-all-btn:hover { background: #333; }
+  .theme-card.hidden { display: none; }
+
+  /* 内容速览模块（通用，颜色继承自主题） */
+  .article-preview .summary { background: var(--summary-bg); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; }
+  .article-preview .summary .slabel { font-size: 14px; font-weight: 600; color: var(--h2); margin: 0 0 8px 0; letter-spacing: 0.5px; }
+  .article-preview .summary .sbody { font-size: 13px; color: var(--body); line-height: 2; margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>🎨 AI 早报 · 7 天主题预览</h1>
+  <p>每天一个主题色，读者每天打开都有新鲜感</p>
+  <div class="day-tabs">
+    <span class="day-tab active" data-target="all">全部</span>
+    <span class="day-tab" data-target="theme-tech">周一 · 科技蓝</span>
+    <span class="day-tab" data-target="theme-orange">周二 · 暖心橙</span>
+    <span class="day-tab" data-target="theme-lavender">周三 · 薰衣草</span>
+    <span class="day-tab" data-target="theme-green">周四 · 极光绿</span>
+    <span class="day-tab" data-target="theme-red">周五 · 中国红</span>
+    <span class="day-tab" data-target="theme-morandi">周六 · 莫兰迪</span>
+    <span class="day-tab" data-target="theme-darkblue">周日 · 深邃蓝</span>
+  </div>
+</div>
+
+<div class="theme-grid">
+
+<!-- 周一 · 极简科技 -->
+<div class="theme-card theme-tech" data-theme="theme-tech">
+  <div class="theme-label">
+    <span class="day">周一</span>
+    <span class="name">🔹 极简科技 Tech Minimal</span>
+    <span class="tagline">干净 · 专业 · 冷静</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周二 · 暖心橙 -->
+<div class="theme-card theme-orange" data-theme="theme-orange">
+  <div class="theme-label">
+    <span class="day">周二</span>
+    <span class="name">🟠 暖心橙 Warm Orange</span>
+    <span class="tagline">亲切 · 有温度 · 早晨感</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周三 · 薰衣草 -->
+<div class="theme-card theme-lavender" data-theme="theme-lavender">
+  <div class="theme-label">
+    <span class="day">周三</span>
+    <span class="name">💜 薰衣草 Lavender</span>
+    <span class="tagline">优雅 · 清新 · 柔和</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周四 · 极光绿 -->
+<div class="theme-card theme-green" data-theme="theme-green">
+  <div class="theme-label">
+    <span class="day">周四</span>
+    <span class="name">🟢 极光绿 Aurora Green</span>
+    <span class="tagline">活力 · 生长感 · 科技自然</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周五 · 红韵 -->
+<div class="theme-card theme-red" data-theme="theme-red">
+  <div class="theme-label">
+    <span class="day">周五</span>
+    <span class="name">🔴 中国红 China Red</span>
+    <span class="tagline">热烈 · 有张力 · 视觉冲击</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周六 · 莫兰迪 -->
+<div class="theme-card theme-morandi" data-theme="theme-morandi">
+  <div class="theme-label">
+    <span class="day">周六</span>
+    <span class="name">💗 莫兰迪 Morandi</span>
+    <span class="tagline">高级 · 安静 · 文艺感</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+<!-- 周日 · 深邃蓝（深色） -->
+<div class="theme-card theme-darkblue" data-theme="theme-darkblue">
+  <div class="theme-label">
+    <span class="day">周日</span>
+    <span class="name">🔵 深邃蓝 Deep Blue</span>
+    <span class="tagline">稳重 · 高端 · 专业深度</span>
+  </div>
+  <div class="article-preview">
+<div class="date">2026 年 6 月 19 日（周五）</div>
+
+    <!-- 内容速览 -->
+    <div class="summary">
+      <p class="slabel">📋 内容速览</p>
+      <p class="sbody">
+        · AI 教父 LeCun 炮轰 xAI 为"失败品"，警示行业泡沫风险<br>
+        · 亚马逊自研芯片加速布局，内部调查 AI 扩张争议<br>
+        · Anthropic 连发两条动态：Claude Design 更新 + 机器人操控突破<br>
+        · 美国政策层面：Sanders 提 7 万亿 AI 公有化计划，Bezos 称 AI 将创造劳动力短缺
+      </p>
+    </div>
+    <hr>
+    <h2>🇨🇳 国内动态</h2>
+    <div class="item">
+      <h3>1. DeepSeek 发布百万上下文视觉语言模型</h3>
+      <p>DeepSeek 于昨日发布新一代视觉语言模型，支持百万 token 上下文窗口，可同时处理长文档与图像输入。该模型在多项基准测试中达到 SOTA 水平。</p>
+      <div class="src">📎 信息来源：[1]</div>
+    </div>
+    <div class="item">
+      <h3>2. 百度推出 AI 搜索增强工具 "寻知"</h3>
+      <p>百度发布面向开发者的 AI 搜索增强工具 "寻知"，支持实时联网检索与多轮对话，可无缝集成到现有应用。</p>
+      <div class="src">📎 信息来源：[2]</div>
+    </div>
+    <hr>
+    <h2>🌏 国际动态</h2>
+    <div class="item">
+      <h3>3. Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner</h3>
+      <p>Midjourney 宣布进军医疗影像领域，推出基于 AI 的全身超声扫描方案，可辅助医生快速完成全身筛查。</p>
+      <p style="margin-top:4px;">Midjourney has announced its entry into medical imaging with an AI-powered full-body ultrasound scanning solution, capable of assisting physicians in rapid whole-body screening.</p>
+      <div class="src">📎 信息来源：[3]</div>
+    </div>
+    <div class="item">
+      <h3>4. Noam Shazeer Leaves Google Gemini to Join OpenAI</h3>
+      <p>Noam Shazeer 离开 Google Gemini 团队，加入 OpenAI，将负责下一代对话模型的研发。</p>
+      <p style="margin-top:4px;">Noam Shazeer has departed Google's Gemini team to join OpenAI, where he will lead next-generation conversational model research.</p>
+      <div class="src">📎 信息来源：[4]</div>
+    </div>
+    <hr>
+    <div class="src-list">
+      <strong>📎 信息来源</strong><br>
+      [1] DeepSeek Introduces Vision-Language Model with 1M Context Window — <a href="#">DeepSeek Blog</a><br>
+      [2] 百度推出"寻知"AI 搜索增强工具 — <a href="#">百度官方</a><br>
+      [3] Midjourney Medical: AI-Powered Full-Body Ultrasound Scanner — <a href="#">Engadget</a><br>
+      [4] Noam Shazeer Leaves Google Gemini to Join OpenAI — <a href="#">CNBC</a>
+    </div>
+    <hr>
+    <div class="footer">感谢阅读！本资讯由 AI 自动搜集整理，内容仅供参考。</div>
+  </div>
+</div>
+
+</div><!-- /theme-grid -->
+
+<script>
+  document.querySelectorAll('.day-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.target;
+      document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      if (target === 'all') {
+        document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('hidden'));
+      } else {
+        document.querySelectorAll('.theme-card').forEach(c => {
+          c.classList.toggle('hidden', c.dataset.theme !== target);
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

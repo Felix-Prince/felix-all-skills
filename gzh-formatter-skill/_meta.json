@@ -1,0 +1,5 @@
+{
+  "name": "gzh-formatter",
+  "description": "AI 早报公众号文章生成 - 多格式输入解析、7 天主题配色、微信兼容 HTML 输出",
+  "version": "1.0.0"
+}
