@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 早报 · 公众号排版预览</title>
+<style>
+  body{margin:0;background:#eef0f2;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;-webkit-text-size-adjust:100%;}
+  .gzh-toolbar{position:fixed;top:0;left:0;right:0;height:54px;background:#ffffff;box-shadow:0 1px 10px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:99;}
+  .gzh-hint{font-size:13px;color:#6b7280;line-height:1.4;}
+  .gzh-hint b{color:#111827;}
+  .gzh-copy{background:#059669;color:#fff;border:0;border-radius:9px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(5,150,105,.28);white-space:nowrap;transition:transform .08s,background .15s;}
+  .gzh-copy:hover{background:#047857;}
+  .gzh-copy:active{transform:translateY(1px);}
+  .gzh-toast{position:fixed;top:66px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,.25);max-width:88vw;text-align:center;}
+  .gzh-toast.show{opacity:1;}
+  .gzh-stage{max-width:700px;margin:78px auto 64px;padding:0 8px;}
+  @media(max-width:520px){.gzh-hint{max-width:150px;}}
+</style>
+</head>
+<body>
+<div class="gzh-toolbar">
+  <span class="gzh-hint">👇 下方是排版效果 · 点右侧 <b>复制</b> 直接粘到公众号</span>
+  <button class="gzh-copy" id="gzhCopyBtn" onclick="gzhCopy()">📋 复制到公众号</button>
+</div>
+<div class="gzh-toast" id="gzhToast"></div>
+<div class="gzh-stage">
+  <div id="gzh-content">
+
+<section style="max-width:677px;margin:0 auto;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#1E293B;line-height:1.7;letter-spacing:0.3px;">
+
+  <section style="background:#0B1220;padding:28px 24px 24px;margin-top:16px;">
+    <p style="margin:0 0 16px;font-size:14px;color:#64748B;font-weight:500;letter-spacing:0.5px;">
+      <span leaf="">每日精选 AI 资讯，3 分钟扫读完毕</span>
+    </p>
+    <section style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+      <span style="font-family:'SF Mono',Consolas,monospace;font-size:13px;color:#22D3EE;font-weight:700;">
+        <span leaf="">2026.07.08</span>
+      </span>
+      <span style="font-size:12px;color:#64748B;">
+        <span leaf="">周三</span>
+      </span>
+      <span style="flex:1;height:1px;background:linear-gradient(to right,rgba(34,211,238,0.3),transparent);">
+        <span leaf=""><br></span>
+      </span>
+      <section style="display:flex;gap:12px;">
+        <span style="font-size:11px;color:#475569;">
+          <span leaf="">今日</span><span style="color:#22D3EE;font-weight:700;"><span leaf=""> 8 </span></span><span leaf="">条</span>
+        </span>
+        <span style="font-size:11px;color:#475569;">
+          <span leaf="">国内</span><span style="color:#22D3EE;font-weight:700;"><span leaf=""> 4 </span></span>
+        </span>
+        <span style="font-size:11px;color:#475569;">
+          <span leaf="">国际</span><span style="color:#3B82F6;font-weight:700;"><span leaf=""> 4 </span></span>
+        </span>
+      </section>
+    </section>
+    <section style="background:rgba(255,255,255,0.03);border-radius:12px;padding:16px 18px;">
+      <section style="display:flex;align-items:center;margin-bottom:12px;">
+        <span style="font-size:14px;margin-right:6px;"><span leaf=""></span></span>
+        <span style="font-size:13px;font-weight:800;color:#22D3EE;letter-spacing:1px;">
+          <span leaf="">内容速览</span>
+        </span>
+      </section>
+      <p style="margin:0 0 8px;font-size:13px;color:#CBD5E1;line-height:1.8;">
+        <span style="color:#22D3EE;font-weight:800;margin-right:6px;"><span leaf="">·</span></span>
+        <span leaf="">OpenAI 发布 GPT-6，上下文窗口扩至 1000 万 token</span>
+      </p>
+      <p style="margin:0 0 8px;font-size:13px;color:#CBD5E1;line-height:1.8;">
+        <span style="color:#22D3EE;font-weight:800;margin-right:6px;"><span leaf="">·</span></span>
+        <span leaf="">DeepSeek-V4 发布，代码能力对标 o3</span>
+      </p>
+      <p style="margin:0 0 8px;font-size:13px;color:#CBD5E1;line-height:1.8;">
+        <span style="color:#22D3EE;font-weight:800;margin-right:6px;"><span leaf="">·</span></span>
+        <span leaf="">Meta 开源 Llama 4，首推原生多模态</span>
+      </p>
+      <p style="margin:0 0 8px;font-size:13px;color:#CBD5E1;line-height:1.8;">
+        <span style="color:#22D3EE;font-weight:800;margin-right:6px;"><span leaf="">·</span></span>
+        <span leaf="">智谱 GLM-5 开源，参数量 130B 推理降本 60%</span>
+      </p>
+      <p style="margin:0;font-size:13px;color:#CBD5E1;line-height:1.8;">
+        <span style="color:#22D3EE;font-weight:800;margin-right:6px;"><span leaf="">·</span></span>
+        <span leaf="">工信部发布 AI 生成内容标识新规</span>
+      </p>
+    </section>
+  </section>
+
+  <section style="padding:28px 24px 8px;">
+    <section style="display:flex;align-items:center;margin-bottom:18px;">
+      <span style="display:inline-block;width:4px;height:16px;background:#22D3EE;border-radius:2px;margin-right:10px;">
+        <span leaf=""><br></span>
+      </span>
+      <span style="font-size:15px;font-weight:900;color:#0F172A;letter-spacing:1px;">
+        <span leaf="">国内 · DOMESTIC</span>
+      </span>
+      <span style="flex:1;height:1px;background:#E2E8F0;margin-left:12px;">
+        <span leaf=""><br></span>
+      </span>
+      <span style="font-size:11px;color:#94A3B8;margin-left:10px;">
+        <span leaf="">4 条</span>
+      </span>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#22D3EE;width:24px;">
+          <span leaf="">01</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">DeepSeek-V4 发布，代码能力对标 o3</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">在 SWE-Bench 得分 71.2，仍坚持完全开源与极低定价。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">机器之心</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#22D3EE;width:24px;">
+          <span leaf="">02</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">智谱 GLM-5 开源，参数量 130B 推理降本 60%</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">国产大模型持续追赶，开源协议支持商用，企业可本地化部署。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">量子位</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#22D3EE;width:24px;">
+          <span leaf="">03</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">工信部发布 AI 生成内容标识新规</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">要求显著合成内容必须标注，9 月起施行，违者最高罚 50 万。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">财联社</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#22D3EE;width:24px;">
+          <span leaf="">04</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">字节豆包大模型日调用量突破 1.2 万亿</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">企业级调用量同比增长 8 倍，火山引擎开放全系列模型 API。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">36</span>
+          </span>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding:20px 24px 8px;">
+    <section style="display:flex;align-items:center;margin-bottom:18px;">
+      <span style="display:inline-block;width:4px;height:16px;background:#3B82F6;border-radius:2px;margin-right:10px;">
+        <span leaf=""><br></span>
+      </span>
+      <span style="font-size:15px;font-weight:900;color:#0F172A;letter-spacing:1px;">
+        <span leaf="">国际 · GLOBAL</span>
+      </span>
+      <span style="flex:1;height:1px;background:#E2E8F0;margin-left:12px;">
+        <span leaf=""><br></span>
+      </span>
+      <span style="font-size:11px;color:#94A3B8;margin-left:10px;">
+        <span leaf="">4 条</span>
+      </span>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#3B82F6;width:24px;">
+          <span leaf="">01</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">OpenAI 发布 GPT-6，上下文窗口扩至 1000 万 token</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">新模型支持原生多模态推理与长文档分析，Pro 用户今日起内测。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">OpenAI</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#3B82F6;width:24px;">
+          <span leaf="">02</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">Meta 开源 Llama 4，首推原生多模态</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">405B 参数版本性能逼近 GPT-6，支持图文统一理解。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">Meta AI</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;border-bottom:1px solid #F1F5F9;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#3B82F6;width:24px;">
+          <span leaf="">03</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">Anthropic 推出 Claude 企业版，主打数据隔离</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">企业数据不用于训练，提供 SOC 2 合规审计与 SSO 接入。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">Anthropic</span>
+          </span>
+        </section>
+      </section>
+    </section>
+    <section style="padding:14px 0;">
+      <section style="display:flex;align-items:flex-start;">
+        <span style="flex-shrink:0;font-size:13px;font-weight:800;color:#3B82F6;width:24px;">
+          <span leaf="">04</span>
+        </span>
+        <section style="flex:1;min-width:0;">
+          <p style="margin:0 0 5px;font-size:15px;font-weight:700;color:#0F172A;line-height:1.5;">
+            <span leaf="">Google Gemini 3 上线，视频理解大幅提升</span>
+          </p>
+          <p style="margin:0 0 7px;font-size:13px;color:#475569;line-height:1.7;">
+            <span leaf="">可分析 2 小时长视频并精准定位画面，免费用户限额开放。</span>
+          </p>
+          <span style="font-size:11px;color:#64748B;font-weight:600;">
+            <span leaf="">Google Blog</span>
+          </span>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section style="padding:24px 24px 32px;">
+    <section style="background:linear-gradient(135deg,#0B1220,#1E293B);border-radius:14px;padding:22px 20px;text-align:center;">
+      <p style="margin:0 0 16px;font-size:14px;color:#CBD5E1;line-height:1.7;">
+        <span leaf="">觉得有用，欢迎点赞、评论、转发</span>
+      </p>
+      <p style="margin:16px 0 0;font-size:10px;color:#475569;letter-spacing:1.5px;">
+        <span leaf="">AI DAILY · AI 早报</span>
+      </p>
+    </section>
+  </section>
+
+</section>
+
+  </div>
+</div>
+<script>
+  function gzhShowToast(msg){
+    var t=document.getElementById('gzhToast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer=setTimeout(function(){t.classList.remove('show');},2800);
+  }
+  function gzhCopy(){
+    var el=document.getElementById('gzh-content');
+    var range=document.createRange();
+    range.selectNodeContents(el);
+    var sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    var ok=false;
+    try{ok=document.execCommand('copy');}catch(e){ok=false;}
+    sel.removeAllRanges();
+    var btn=document.getElementById('gzhCopyBtn');
+    if(ok){gzhShowToast('✅ 已复制！打开公众号编辑器 Ctrl/+V 粘贴');btn.textContent='✅ 已复制';setTimeout(function(){btn.textContent=' 复制到公众号';},2800);}
+    else{gzhShowToast('❌ 复制失败，请手动全选复制');}
+  }
+</script>
+</body>
+</html>
