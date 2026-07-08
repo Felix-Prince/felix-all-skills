@@ -1,0 +1,90 @@
+{
+  "date": "2026-07-08",
+  "weekday": "周三",
+  "total": 8,
+  "domestic": 4,
+  "international": 4,
+  "items": [
+    {
+      "id": "20260708-001",
+      "title": "智谱 GLM-5 开源，参数量 130B 推理降本 60%",
+      "summary": "国产大模型持续追赶，开源协议支持商用，企业可本地化部署。",
+      "source": "量子位",
+      "sourceUrl": "https://example.com/zhipu-glm5",
+      "category": "domestic",
+      "publishedAt": "2026-07-08T08:30:00+08:00",
+      "importance": 8,
+      "featured": true
+    },
+    {
+      "id": "20260708-002",
+      "title": "字节豆包大模型日调用量突破 1.2 万亿",
+      "summary": "企业级调用量同比增长 8 倍，火山引擎开放全系列模型 API。",
+      "source": "36",
+      "category": "domestic",
+      "publishedAt": "2026-07-08T06:00:00+08:00",
+      "importance": 7,
+      "featured": false
+    },
+    {
+      "id": "20260708-003",
+      "title": "DeepSeek-V4 发布，代码能力对标 o3",
+      "summary": "在 SWE-Bench 得分 71.2，仍坚持完全开源与极低定价。",
+      "source": "机器之心",
+      "category": "domestic",
+      "publishedAt": "2026-07-08T04:00:00+08:00",
+      "importance": 9,
+      "featured": true
+    },
+    {
+      "id": "20260708-004",
+      "title": "工信部发布 AI 生成内容标识新规",
+      "summary": "要求显著合成内容必须标注，9 月起施行，违者最高罚 50 万。",
+      "source": "财联社",
+      "category": "domestic",
+      "publishedAt": "2026-07-08T02:00:00+08:00",
+      "importance": 8,
+      "featured": true
+    },
+    {
+      "id": "20260708-005",
+      "title": "Anthropic 推出 Claude 企业版，主打数据隔离",
+      "summary": "企业数据不用于训练，提供 SOC 2 合规审计与 SSO 接入。",
+      "source": "Anthropic",
+      "category": "international",
+      "publishedAt": "2026-07-08T09:00:00+08:00",
+      "importance": 8,
+      "featured": true
+    },
+    {
+      "id": "20260708-006",
+      "title": "Meta 开源 Llama 4，首推原生多模态",
+      "summary": "405B 参数版本性能逼近 GPT-6，支持图文统一理解。",
+      "source": "Meta AI",
+      "category": "international",
+      "publishedAt": "2026-07-08T07:00:00+08:00",
+      "importance": 9,
+      "featured": true
+    },
+    {
+      "id": "20260708-007",
+      "title": "Google Gemini 3 上线，视频理解大幅提升",
+      "summary": "可分析 2 小时长视频并精准定位画面，免费用户限额开放。",
+      "source": "Google Blog",
+      "category": "international",
+      "publishedAt": "2026-07-08T05:00:00+08:00",
+      "importance": 7,
+      "featured": false
+    },
+    {
+      "id": "20260708-008",
+      "title": "OpenAI 发布 GPT-6，上下文窗口扩至 1000 万 token",
+      "summary": "新模型支持原生多模态推理与长文档分析，Pro 用户今日起内测。",
+      "source": "OpenAI",
+      "category": "international",
+      "publishedAt": "2026-07-08T03:00:00+08:00",
+      "importance": 10,
+      "featured": true
+    }
+  ]
+}
