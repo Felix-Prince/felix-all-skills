@@ -28,7 +28,7 @@ def main():
 
     content = open(src, encoding="utf-8").read().strip()
     tpl_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "..", "assets", "preview-template.html")
+                            "..", "assets", "preview.html")
     tpl = open(tpl_path, encoding="utf-8").read()
 
     title = os.path.splitext(os.path.basename(src))[0]
