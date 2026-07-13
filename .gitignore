@@ -1,0 +1,4 @@
+*.png
+todo.md
+__pycache__/
+*.pyc
