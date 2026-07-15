@@ -1,0 +1,9 @@
+{
+  "appid": "****",
+  "appsecret": "****",
+  "thumb_media_id": "****",
+  "default_author": "",
+  "default_digest_maxlen": 120,
+  "api_base": "https://api.weixin.qq.com/cgi-bin",
+  "html_size_warn_kb": 1900
+}
