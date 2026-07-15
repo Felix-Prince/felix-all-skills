@@ -1,0 +1,6 @@
+# 含 AppID/AppSecret 等敏感凭据，绝不进 git
+config.local.json
+token_cache.json
+
+# 运行产物
+*.log
