@@ -189,7 +189,71 @@ ai-source/
 
 ---
 
-## 十、方法论来源（仅供理解，不要照搬代码）
+## 十、可选可视化（GitHub Pages，加法，不动采集主线）
+
+源健康页是给人看的"前端壳子"，读 `data/source-status.json` 渲染表格。不动核心 pipeline；没有它，agent 读 JSON 不受影响。
+
+### 10.1 GitHub Pages 的 URL 规则（必读，易踩坑）
+
+**每个仓库都能单独开 Pages**，开了就有一个公开可访问地址。它们都在同一域名 `username.github.io` 下，区别只在路径：
+
+| 仓库 | Pages 地址 | 说明 |
+|------|-----------|------|
+| `username.github.io`（特殊仓库） | `https://username.github.io/` | 占根路径，**没有**仓库名段 |
+| 其它仓库（如 `ai-source`） | `https://username.github.io/ai-source/` | 占 `/<仓库名>/` 子路径 |
+
+- 不是"只有 `username.github.io` 仓库才有对外域名"——**所有开了 Pages 的仓库都有公开 URL**，只是带了一段仓库名路径。
+- 比方：`username.github.io` 是门牌号本身，其它仓库是同栋楼不同房间号，都能被访问。
+- 两个仓库各自独立开 Pages，互不影响。公开仓库免费；私有仓库 Pages 要付费 plan。
+
+### 10.2 相对路径注意（项目仓库 Pages 的关键坑）
+
+因为 `ai-source` 的 Pages 地址带 `/ai-source/` 前缀，源健康页 `health.html` 里**所有内部引用和 fetch 必须用相对路径**：
+
+```html
+✅ 对：fetch('./data/source-status.json')      // 解析成 /ai-source/data/source-status.json
+❌ 错：fetch('/data/source-status.json')       // 解析成 /data/...（跑去根仓库找，404）
+```
+
+同理，`<a>`、`<img>`、CSS/JS 引用也用相对路径，不要写 `/` 开头的绝对路径。
+
+### 10.3 集成到现有 Pages 页面
+
+你已有一个在用的 GitHub Pages 页面（在 `username.github.io` 仓库）。想在那里加一个板块跳转到 `ai-source` 的源健康页：
+
+1. **前提**：`ai-source` 仓库单独开自己的 Pages（Settings → Pages → Source 选 `master` 根目录），得到地址 `https://username.github.io/ai-source/health.html`
+2. **在你现有页面加跳转**（仓库 A），就是一个跨仓库普通超链接：
+   ```html
+   <section class="source-health">
+     <h2>📡 数据源健康</h2>
+     <a href="https://username.github.io/ai-source/health.html" target="_blank">
+       查看 AI 资讯源健康状态 →
+     </a>
+   </section>
+   ```
+   `target="_blank"` 新标签页打开，不打断现有页面。两个仓库无需任何集成。
+
+### 10.4 展示方式：跳转 vs 内嵌
+
+| 方式 | 写法 | 效果 |
+|------|------|------|
+| **跳转链接**（推荐先做） | `<a href=".../ai-source/health.html" target="_blank">` | 点按钮 → 新标签页打开源健康页 |
+| **iframe 内嵌** | `<iframe src=".../ai-source/health.html" ...>` | 现有页面里直接嵌一块显示，不跳走 |
+
+iframe 跨源**显示**没问题（只是不能跨域脚本操作它）；源健康页内部 `fetch('./data/source-status.json')` 是同源请求，正常工作。
+
+### 10.5 一个必须避开的坑：跨域 fetch
+
+| 做法 | 是否可行 |
+|------|----------|
+| ✅ 跳转链接 / iframe 嵌整个 `health.html` | 没问题 |
+| ❌ 现有页面（仓库 A）直接 `fetch` 仓库 B 的 `source-status.json` 渲染摘要 | 被**浏览器 CORS 拦截**——GitHub Pages 默认不给 JSON 加跨域头 |
+
+想"现有页面里显示摘要"的话，要么用 iframe，要么让 `ai-source` 的 health.html 暴露一个专门给嵌入用的精简视图，**不要**在仓库 A 的页面里直接跨域 fetch 仓库 B 的 JSON。
+
+---
+
+## 十一、方法论来源（仅供理解，不要照搬代码）
 
 本项目吸收了 LearnPrompt/ai-news-radar 仓库的方法论：信源阶梯、源健康监控、抓用解耦、付费源预算门控、RSS 优先替换 RSSHub 公共实例。但**代码与信源全归自己**，不依赖任何第三方数据，不 fork 别人仓库。
 
