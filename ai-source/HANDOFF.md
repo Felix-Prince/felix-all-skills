@@ -103,6 +103,53 @@ ai-source/
 
 ---
 
+## 五·五、架构决策记录（2026-08-01 讨论确认）
+
+> 本节点是后续讨论的结论，落地为决策，新执行的 agent 直接遵循。
+
+### D1：`ai-source` 独立成仓，不在 skill 集合 monorepo 里
+
+**决策**：`ai-source` 单独开一个 GitHub 仓库，作为纯数据应用，独立于 `felix-all-skills`（skill 集合仓库）。
+
+**理由**：
+- 消费方是**外部 agent，通过 HTTP GET 一个稳定 URL 拉取数据**，不 clone、不做 git 操作。数据 URL 的稳定性就是契约。
+- 独立仓 → 数据 URL 为 `github.com/Felix-Prince/ai-source/raw/main/data/latest-24h.json`，干净、长期不变。
+- 留在 monorepo → URL 带 `felix-all-skills/ai-source/` 前缀，技能集合仓任何重构/改名都会断外部 agent 的依赖。
+- `ai-source` 本质是**应用**（定时跑的软件 + 数据制品），不是 skill（给 agent 的方法论）。应用应独立生命周期、独立部署。
+- 采集 CI 每 2h 自动 commit 数据，只碰自己的数据仓，不污染 skill 仓库 git 历史。
+
+**对代码结构的影响**：本目录 `ai-source/` 最终会整目录迁到新仓根目录（去掉 `ai-source/` 嵌套），workflow 路径、Pages 相对路径均以「新仓根目录」为基准。当前在本 monorepo 内仍按 `ai-source/` 前缀开发调试，迁移时统一改基准。
+
+### D2：MVP 首源与信源验证结果（家中网络实测）
+
+**决策**：以验证过的可达源为准选源，不照抄文档第六节候选表。
+
+| 源 | URL | 验证结果（家中网络） |
+|----|-----|----------------------|
+| 36氪 | https://36kr.com/feed | ✅ 200 + XML feed |
+| 量子位 | https://www.qbitai.com/feed | ✅ 200 + XML feed |
+| The Verge | https://www.theverge.com/rss/index.xml | ✅ 200 + XML feed |
+| TechCrunch | https://techcrunch.com/feed/ | ✅ 200 + XML feed |
+| Ars Technica | https://feeds.arstechnica.com/arstechnica/index | ✅ 200 + XML feed |
+| OpenAI blog | https://openai.com/news/rss.xml | ✅ 200 + XML feed |
+| arXiv cs.AI | https://export.arxiv.org/rss/cs.AI | ✅ 200 + XML feed |
+| InfoQ 中文 | https://www.infoq.cn/feed | ⚠️ 200 但返回 HTML，非 feed |
+| 机器之心 | https://www.jiqizhixin.com/rss | ⚠️ 302 → data-service JS 页，非 feed |
+| Anthropic news | https://www.anthropic.com/news/rss.xml | ❌ 404（URL 不正确，需另找） |
+| Hacker News | https://news.ycombinator.com/rss | ❌ 000 连接失败（US 托管，家里被限） |
+| HuggingFace blog | https://huggingface.co/blog/feed.xml | ❌ 000 连接失败（同上） |
+
+**含意**：
+- MVP 首源从 ✅ 中选结构干净的：建议 **arXiv cs.AI**（规整、量足、纯 AI 内容）或 OpenAI blog（官方一手，tier 0）。原文档建议的 Hacker News / HuggingFace 在家连不上，弃用。
+- HN / HF 是 US 托管，家里 000 多为地域/网络干扰，**GH Actions US 出口下可能可达**，阶段 3 接 CI 时再验证，不提前剔除。
+- 机器之心 / InfoQ / Anthropic 需替代方案（找正确 URL 或换源），放阶段 2。
+
+### D3：Pages 源健康页走相对路径 + 独立仓根 URL
+
+沿用文档第十节：源健康页 `health.html` 里所有内部引用与 fetch 用**相对路径**（`./data/source-status.json`），以支持 `felix-prince.github.io/ai-source/...` 这种带仓库名前缀的 Pages 地址。仓库 public，Pages 免费。
+
+---
+
 ## 六、候选信源（URL 需在家中网络逐一验证后写入 sources.yaml）
 
 | 源 | URL | 分类 | 梯级 |
@@ -192,6 +239,8 @@ ai-source/
 ## 十、可选可视化（GitHub Pages，加法，不动采集主线）
 
 源健康页是给人看的"前端壳子"，读 `data/source-status.json` 渲染表格。不动核心 pipeline；没有它，agent 读 JSON 不受影响。
+
+> **前提（D1）**：本节以 `ai-source` 独立成仓为前提，Pages 地址为 `felix-prince.github.io/ai-source/...`。若后续仍留在 monorepo，URL 前缀变为 `felix-prince.github.io/felix-all-skills/ai-source/...`，相对路径写法不受影响。
 
 ### 10.1 GitHub Pages 的 URL 规则（必读，易踩坑）
 
