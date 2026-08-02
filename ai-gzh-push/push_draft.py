@@ -31,7 +31,7 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).resolve().parent
 CONFIG_PATH = HERE / "config.local.json"
 TOKEN_CACHE = HERE / "token_cache.json"
 
