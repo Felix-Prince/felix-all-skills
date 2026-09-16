@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地铁JK少女·阴雨叙事 · 0919 拍摄方案</title>
+<style>
+  :root{
+    --bg:#f6f6f6; --card:#fff; --ink:#222; --sub:#8590a6; --sub2:#999;
+    --red:#FF2442; --red-soft:#fff0f2; --line:rgba(0,0,0,0.06);
+    --shadow:0 2px 12px rgba(0,0,0,0.05); --r:14px; --r2:20px;
+    --gold:#ff9500;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;line-height:1.6;font-size:15px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+
+  /* 顶部笔记头 */
+  .top{background:var(--card);padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+  .top .meta{font-size:12px;color:var(--sub2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .top .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FF2442,#ff6b81);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .top h1{font-size:20px;font-weight:800;margin:0 0 8px;letter-spacing:.3px}
+  .top .who{font-size:13px;color:var(--sub)}
+  .tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .tag{font-size:12px;color:var(--red);background:var(--red-soft);padding:3px 10px;border-radius:14px;font-weight:600}
+  .tag.g{background:#f2f3f5;color:#5a6373}
+  .tag.o{background:#fff5e6;color:var(--gold)}
+
+  .section-title{font-size:15px;font-weight:800;margin:20px 16px 10px;display:flex;align-items:center;gap:6px}
+  .section-title .bar{width:4px;height:16px;background:var(--red);border-radius:2px}
+  .section-title .k{font-size:12px;color:var(--sub2);font-weight:400;margin-left:auto}
+
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin:0 16px 12px;padding:14px 14px;overflow:hidden}
+
+  /* 正文剧情 */
+  .story{background:var(--card)}
+  .story .lead{font-size:14px;color:var(--sub);margin:0 0 8px}
+  .story .arc{font-size:14px;line-height:1.7;color:#333;margin-top:10px;padding:10px 12px;background:#fafafa;border-radius:10px}
+  .story .arc b{color:var(--red)}
+  .story .arrow{color:var(--red);font-weight:700}
+
+  /* 条件一行 */
+  .cond{font-size:13px;color:#444;line-height:1.7}
+  .cond .ci{display:inline-block;margin-right:8px}
+
+  /* 参考图卡 */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .ref{border-radius:10px;overflow:hidden;background:#f2f2f2;position:relative}
+  .ref img{width:100%;height:150px;object-fit:cover;display:block}
+  .ref .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:11px;padding:14px 8px 6px;text-align:center}
+  .ph{border:1.5px dashed #d8d8d8;border-radius:10px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#bbb;font-size:12px;background:#fafafa;gap:4px}
+  .ph .ico{font-size:22px}
+  .pose-tags{font-size:12px;color:#666;margin:8px 0;line-height:1.7}
+  .pose-tags .l{display:inline-block;background:#f2f3f5;color:#5a6373;padding:2px 8px;border-radius:10px;margin:0 4px 4px 0;font-size:11px}
+  .pose-tags .l.r{background:var(--red-soft);color:var(--red)}
+  .pose-tags .l.p{background:#f0eaf6;color:#7b5ea0}
+  .xhs-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;color:var(--red);text-decoration:none;border:1px solid var(--red);padding:4px 12px;border-radius:14px;font-weight:600;background:#fff}
+
+  /* checklist */
+  ul.cl{margin:0;padding:0;list-style:none}
+  ul.cl li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#333}
+  ul.cl li:last-child{border-bottom:none}
+  input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--red);border-radius:4px}
+  .pill-note{font-size:12px;color:var(--sub);background:#fafafa;border-radius:8px;padding:8px 10px;margin-top:8px;line-height:1.6}
+
+  /* 天气提醒 */
+  .weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .wg{background:#fafafa;border-radius:10px;padding:8px 10px;font-size:12px}
+  .wg .t{color:var(--sub2);font-size:11px;margin-bottom:2px}
+  .wg .v{color:#333;font-weight:600}
+  .tips{font-size:13px;color:#444;line-height:1.9}
+  .tips .n{color:var(--red);font-weight:700}
+
+  /* PlanB */
+  .planb{background:#fff7f8;border:1.5px dashed var(--red);border-radius:var(--r)}
+  .planb .pt{font-size:13px;color:var(--red);font-weight:700;margin-bottom:6px}
+
+  .foot{color:var(--sub2);font-size:11px;text-align:center;margin:24px 16px 0;line-height:1.7}
+  .interact{display:flex;justify-content:center;gap:24px;margin:8px 0 4px;color:var(--sub2);font-size:12px}
+  .interact span{display:flex;align-items:center;gap:4px}
+  @media(max-width:480px){
+    body{font-size:14px}
+    .ref img,.ph{height:130px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 笔记头 -->
+  <div class="top">
+    <div class="meta"><span class="avatar">摄</span><span>shoot-planner · 拍摄方案</span></div>
+    <h1>阴雨天，乔司地铁站，一个独行 JK 少女</h1>
+    <div class="who">📍 杭州·临平区 · 乔司地铁站 · 0919 周六</div>
+    <div class="tags-row">
+      <span class="tag">#地铁JK少女</span>
+      <span class="tag">#阴雨叙事</span>
+      <span class="tag">🎨 情绪疏离</span>
+      <span class="tag g">☁ 多云到阴·间歇阵雨</span>
+      <span class="tag g">⏰ 14:00-18:00</span>
+      <span class="tag o">💨 NE 3-4级</span>
+    </div>
+  </div>
+
+  <!-- 1 主题+剧情 -->
+  <div class="section-title"><span class="bar"></span>主题 + 剧情</div>
+  <div class="card story">
+    <div class="lead"><b>主题</b>　阴雨天的乔司地铁站，JK 少女独行候车的疏离感。</div>
+    <div style="font-size:14px;color:#333;line-height:1.8">
+      她一个人坐在空站台的长椅上，耳机里放着歌，列车开走又停下她都没动。雨下大了，她撑开透明伞慢慢走到出站口的光里站住，像是在等什么人，又像只是不想走进雨里。
+    </div>
+    <div class="arc">
+      <b>情绪弧线</b>　开场·静 <span class="arrow">→</span> 站台长椅·漫射光·不动 <span class="arrow">→</span> 推进·动 <span class="arrow">→</span> 撑伞走动·屋檐避雨·低头看水洼 <span class="arrow">→</span> 收尾·悬 <span class="arrow">→</span> 出站口半脸明暗·剪影悬停
+    </div>
+    <div style="font-size:12px;color:var(--sub);margin-top:8px">📌 拍摄按弧线走：先静、再动、最后悬。每个景别服务于当下情绪节点，不是堆姿势。</div>
+  </div>
+
+  <!-- 2 当天条件 -->
+  <div class="section-title"><span class="bar"></span>当天条件 <span class="k">极简</span></div>
+  <div class="card">
+    <div class="cond">
+      <span class="ci">📅 2026-09-19 周六</span>
+      <span class="ci">📍 杭州临平区</span>
+      <span class="ci">🚉 乔司地铁站（1号线高架站）</span><br>
+      <span class="ci">☁ 多云到阴·间歇阵雨</span>
+      <span class="ci">🌡 22~30℃</span>
+      <span class="ci">💨 东北风3-4级</span>
+      <span class="ci">⏰ 主拍 14:00-18:00（午后漫射到蓝调）</span><br>
+      <span style="color:var(--sub2);font-size:12px">天气为区级预报，到场先看天。</span>
+    </div>
+  </div>
+
+  <!-- 3 参考图 -->
+  <div class="section-title"><span class="bar"></span>参考图 · 远全中近特 <span class="k">重点</span></div>
+
+  <!-- 远景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🔭 远景 <span style="font-size:12px;color:var(--sub);font-weight:400">人小环境大 · 开场疏离的静</span></div>
+    <div class="grid2">
+      <div class="ref"><img src="https://images.unsplash.com/photo-1774015321040-21ca53c8fb65?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="远景·空站台环境参考" loading="lazy"><div class="cap">空站台环境</div></div>
+      <div class="ref"><img src="https://images.unsplash.com/photo-1628518062953-54f3cd9e1800?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="远景·站台纵深参考" loading="lazy"><div class="cap">站台纵深</div></div>
+    </div>
+    <div class="pose-tags"><span class="l r">柔光</span>走动中不看镜头 · 站台尽头侧身 · 长椅独坐</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=地铁站远景空荡拍照" target="_blank" rel="noopener">🔍 小红书自搜：地铁站远景空荡</a>
+  </div>
+
+  <!-- 全景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🚶 全景 <span style="font-size:12px;color:var(--sub);font-weight:400">全身入画 · 推进的动</span></div>
+    <div class="grid2">
+      <div class="ref"><img src="https://images.unsplash.com/photo-1588870577703-6184bfa1df8b?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="全景·雨中全身走动参考" loading="lazy"><div class="cap">雨中全身走动</div></div>
+      <div class="ref"><img src="https://images.unsplash.com/photo-1629987464829-2d6bd11b5826?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="全景·撑伞全身参考" loading="lazy"><div class="cap">撑伞全身</div></div>
+    </div>
+    <div class="pose-tags"><span class="l p">低光/柔光</span>雨中慢走抓拍 · 撑伞回眸 · 风衣走动</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=雨中走路全身抓拍" target="_blank" rel="noopener">🔍 小红书自搜：雨中走路全身抓拍</a>
+  </div>
+
+  <!-- 中景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">👬 中景 <span style="font-size:12px;color:var(--sub);font-weight:400">半身 · 推进中段</span></div>
+    <div class="grid2">
+      <div class="ref"><img src="https://images.unsplash.com/photo-1666945044221-d8c77947e721?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="中景·半身靠墙参考" loading="lazy"><div class="cap">半身靠墙</div></div>
+      <div class="ref"><img src="https://images.unsplash.com/photo-1513866717996-6c19fd870937?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="中景·撑伞半身参考" loading="lazy"><div class="cap">撑伞半身</div></div>
+    </div>
+    <div class="pose-tags"><span class="l r">柔光</span>侧身靠墙低头 · 屋檐避雨望远 · 撑伞回眸半身</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=地铁靠墙半身摆姿" target="_blank" rel="noopener">🔍 小红书自搜：地铁靠墙半身摆姿</a>
+  </div>
+
+  <!-- 近景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">😌 近景 <span style="font-size:12px;color:var(--sub);font-weight:400">胸像 · 收尾的悬</span></div>
+    <div class="grid2">
+      <div class="ref"><img src="https://images.unsplash.com/photo-1751004539264-f3a7a5d2063f?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="近景·仰望侧脸参考" loading="lazy"><div class="cap">仰望侧脸</div></div>
+      <div class="ref"><img src="https://images.unsplash.com/photo-1542826640-e212477a5a93?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="近景·雨中侧脸参考" loading="lazy"><div class="cap">雨中侧脸</div></div>
+    </div>
+    <div class="pose-tags"><span class="l r">柔光</span><span class="l p">低光</span>仰望侧脸（雨天雨丝感）· 低头看水洼侧脸 · 雨中侧脸特写</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=仰望侧脸胸像" target="_blank" rel="noopener">🔍 小红书自搜：仰望侧脸胸像</a>
+  </div>
+
+  <!-- 特写 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🔍 特写 <span style="font-size:12px;color:var(--sub);font-weight:400">脸/手/伞/水洼 · 悬的放大</span></div>
+    <div class="grid2">
+      <div class="ref"><img src="https://images.unsplash.com/photo-1560782205-4dd83ceb0270?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="特写·水洼倒影局部参考" loading="lazy"><div class="cap">水洼倒影局部</div></div>
+      <div class="ref"><img src="https://images.unsplash.com/photo-1560782202-154b39d57ef2?fm=jpg&q=60&w=400&auto=format&fit=crop" alt="特写·雨滴水面细节参考" loading="lazy"><div class="cap">雨滴水面细节</div></div>
+    </div>
+    <div class="pose-tags"><span class="l p">低光/人工光</span>出站口半脸明暗 · 手撑透明伞局部 · 水洼倒影俯拍 · 雨滴伞面</div>
+    <div class="ph"><span class="ico">🖼</span>占位：特写 · 手撑透明伞局部<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=半脸阴影特写水洼倒影" target="_blank" rel="noopener">🔍 小红书自搜：半脸阴影特写 / 水洼倒影</a>
+  </div>
+
+  <!-- 4 服装+道具 -->
+  <div class="section-title"><span class="bar"></span>服装 + 道具</div>
+  <div class="card">
+    <ul class="cl">
+      <li><input type="checkbox"> JK 深蓝/藏青格纹裙 + 白衬衫 + 深色领结</li>
+      <li><input type="checkbox"> 深色过膝袜（避白）· 黑色乐福鞋（避小白鞋）</li>
+      <li><input type="checkbox"> 冷灰/藏蓝薄风衣（呼应阴雨基调）</li>
+      <li><input type="checkbox"> 备用 JK 裙一条（坐站台/水洼易湿）</li>
+      <li><input type="checkbox"> 透明伞（首选，能看见脸）</li>
+      <li><input type="checkbox"> 单肩帆布包 · 入耳耳机 · 饮料罐 · 纸巾</li>
+    </ul>
+    <div class="pill-note">🎨 色系：冷灰站台底 + JK 深蓝 + 肤色暖。早晚 22℃+风，外套必带。</div>
+  </div>
+
+  <!-- 5 设备 -->
+  <div class="section-title"><span class="bar"></span>设备</div>
+  <div class="card">
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">⏳ 设备清单待录入 memory（把机身/镜头/补光/脚架发我存档，以后不重复列）。本次仅列关键补充项：</div>
+    <ul class="cl" style="margin-top:8px">
+      <li><input type="checkbox"> 透明伞（道具兼挡雨）</li>
+      <li><input type="checkbox"> 镜头布 + 密封袋（防雨防起雾）</li>
+      <li><input type="checkbox"> 防水袋（换镜头操作用）</li>
+      <li><input type="checkbox"> 备用电池 ×2</li>
+      <li><input type="checkbox"> 大光圈定焦 35/50mm f/1.8 起（阴雨 ISO 800-3200 要稳）</li>
+    </ul>
+    <div class="pill-note">🚫 不带重型补光——情绪片靠现场光，人工补光破坏叙事感。</div>
+  </div>
+
+  <!-- 6 天气调整 -->
+  <div class="section-title"><span class="bar"></span>天气动态调整</div>
+  <div class="card">
+    <div class="weather-grid">
+      <div class="wg"><div class="t">✅ 优势</div><div class="v">柔光肤色匀 · 雨天叙事氛围 · 漫射光铺脸 · 风发丝飘</div></div>
+      <div class="wg"><div class="t">⚠️ 代价</div><div class="v">轮廓光弱 · ISO 偏高 · 设备防雨 · 模特怕冷</div></div>
+    </div>
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">🔑 阵雨间歇——雨起切雨天叙事（全景/特写水洼）、雨停切情绪疏离（远景/中景走动），两组交替，不要傻等。</div>
+    <div class="tips">
+      <span class="n">1.</span> 设备防水优先级最高：换镜头快或在密封袋里操作，机身不防溅套防水套<br>
+      <span class="n">2.</span> 镜头起雾：空调环境到站台缓温 10 分钟再开拍<br>
+      <span class="n">3.</span> 风向东北 3-4 级，伞朝风向倾斜避免兜风翻伞；高架站台风更大注意安全<br>
+      <span class="n">4.</span> 模特保暖：22℃+风+雨体感偏凉，拍完一段躲屋檐补外套<br>
+      <span class="n">5.</span> 能见度差到看不清对面站台 → 转 Plan B<br>
+      <span class="n">6.</span> 逆光姿势今天效果打折，优先侧光/顶光/漫射
+    </div>
+  </div>
+
+  <!-- 7 Plan B -->
+  <div class="section-title"><span class="bar"></span>Plan B</div>
+  <div class="card planb">
+    <div class="pt">🌂 天气恶化备选</div>
+    <div style="font-size:13px;color:#333;line-height:1.7">
+      若面持续大雨、能见度差、或高架站台风大不安全 → 转 <b>乔司站地下出站通道 + 出站口外有顶商铺廊道</b>。
+    </div>
+    <ul class="cl" style="margin-top:8px">
+      <li>同主题换场景：阴雨站台 → 地下通道灯光，更孤更冷</li>
+      <li>远景换"通道纵深感"；中景"靠墙/倚柱"为主</li>
+      <li>近景/特写：出站口光通道半脸明暗升级为核心</li>
+      <li>剧情弧线不变（静→动→悬），场景换皮</li>
+      <li>设备：透明伞仍带（出口拍雨景）；ISO 更高，大光圈更重要</li>
+    </ul>
+    <div class="pill-note" style="background:#fff0f2;color:#b0303a">💡 Plan B 不是另起主题，是同主题换能扛天气的场景。情绪疏离风格本就适合室内/通道，切换几乎无损。</div>
+  </div>
+
+  <!-- 互动条 -->
+  <div class="interact">
+    <span>❤️ 收藏</span><span>📌 待补充</span><span>🔗 Unsplash</span>
+  </div>
+
+  <div class="foot">
+    参考图来源 Unsplash（直链预览，需现场有网）· 每景别附小红书自搜关键词 · 无图景别保留占位<br>
+    未使用 AI 生图 · shoot-planner skill（XHS 风格版）· 2026-09-19
+  </div>
+
+</div>
+</body>
+</html>
