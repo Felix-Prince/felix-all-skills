@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--
+  shoot-planner 统一 HTML 模板 · 小红书社区风格
+  用法（给 skill）：读本文件，把所有 {{占位符}} 替换为实际内容，写入 output/方案_YYYYMMDD_主题.html。
+  - 5 个景别（远全中近特）为标准结构，每个景别卡片复制 .card 模式填充；图多时复制 .ref 块，图缺时用 .ph 占位框。
+  - CSS 已固化（XHS 风格），不要重写样式，只填内容。
+  - 占位符列表见文件末尾注释。
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}} · 拍摄方案</title>
+<style>
+  :root{
+    --bg:#f6f6f6; --card:#fff; --ink:#222; --sub:#8590a6; --sub2:#999;
+    --red:#FF2442; --red-soft:#fff0f2; --line:rgba(0,0,0,0.06);
+    --shadow:0 2px 12px rgba(0,0,0,0.05); --r:14px; --gold:#ff9500;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;line-height:1.6;font-size:15px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+  .top{background:var(--card);padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+  .top .meta{font-size:12px;color:var(--sub2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .top .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FF2442,#ff6b81);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .top h1{font-size:20px;font-weight:800;margin:0 0 8px;letter-spacing:.3px}
+  .top .who{font-size:13px;color:var(--sub)}
+  .tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .tag{font-size:12px;color:var(--red);background:var(--red-soft);padding:3px 10px;border-radius:14px;font-weight:600}
+  .tag.g{background:#f2f3f5;color:#5a6373}
+  .tag.o{background:#fff5e6;color:var(--gold)}
+  .section-title{font-size:15px;font-weight:800;margin:20px 16px 10px;display:flex;align-items:center;gap:6px}
+  .section-title .bar{width:4px;height:16px;background:var(--red);border-radius:2px}
+  .section-title .k{font-size:12px;color:var(--sub2);font-weight:400;margin-left:auto}
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin:0 16px 12px;padding:14px 14px;overflow:hidden}
+  .story .lead{font-size:14px;color:var(--sub);margin:0 0 8px}
+  .story .arc{font-size:14px;line-height:1.7;color:#333;margin-top:10px;padding:10px 12px;background:#fafafa;border-radius:10px}
+  .story .arc b{color:var(--red)}
+  .story .arrow{color:var(--red);font-weight:700}
+  .cond{font-size:13px;color:#444;line-height:1.7}
+  .cond .ci{display:inline-block;margin-right:8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .ref{border-radius:10px;overflow:hidden;background:#f2f2f2;position:relative}
+  .ref img{width:100%;height:150px;object-fit:cover;display:block}
+  .ref .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:11px;padding:14px 8px 6px;text-align:center}
+  .ph{border:1.5px dashed #d8d8d8;border-radius:10px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#bbb;font-size:12px;background:#fafafa;gap:4px}
+  .ph .ico{font-size:22px}
+  .pose-tags{font-size:12px;color:#666;margin:8px 0;line-height:1.7}
+  .pose-tags .l{display:inline-block;background:#f2f3f5;color:#5a6373;padding:2px 8px;border-radius:10px;margin:0 4px 4px 0;font-size:11px}
+  .pose-tags .l.r{background:var(--red-soft);color:var(--red)}
+  .pose-tags .l.p{background:#f0eaf6;color:#7b5ea0}
+  .xhs-btn{display:inline-flex;align-items:center;gap:4px;margin-top:8px;font-size:12px;color:var(--red);text-decoration:none;border:1px solid var(--red);padding:4px 12px;border-radius:14px;font-weight:600;background:#fff}
+  ul.cl{margin:0;padding:0;list-style:none}
+  ul.cl li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#333}
+  ul.cl li:last-child{border-bottom:none}
+  input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--red);border-radius:4px}
+  .pill-note{font-size:12px;color:var(--sub);background:#fafafa;border-radius:8px;padding:8px 10px;margin-top:8px;line-height:1.6}
+  .weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .wg{background:#fafafa;border-radius:10px;padding:8px 10px;font-size:12px}
+  .wg .t{color:var(--sub2);font-size:11px;margin-bottom:2px}
+  .wg .v{color:#333;font-weight:600}
+  .tips{font-size:13px;color:#444;line-height:1.9}
+  .tips .n{color:var(--red);font-weight:700}
+  .planb{background:#fff7f8;border:1.5px dashed var(--red);border-radius:var(--r)}
+  .planb .pt{font-size:13px;color:var(--red);font-weight:700;margin-bottom:6px}
+  .foot{color:var(--sub2);font-size:11px;text-align:center;margin:24px 16px 0;line-height:1.7}
+  .interact{display:flex;justify-content:center;gap:24px;margin:8px 0 4px;color:var(--sub2);font-size:12px}
+  .interact span{display:flex;align-items:center;gap:4px}
+  @media(max-width:480px){body{font-size:14px}.ref img,.ph{height:130px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 笔记头 -->
+  <div class="top">
+    <div class="meta"><span class="avatar">摄</span><span>shoot-planner · 拍摄方案</span></div>
+    <h1>{{TITLE}}</h1>
+    <div class="who">{{META}}</div>
+    <!-- 话题标签：按主题/风格/天气/时段生成，红色为主题类，灰色为天气时段类 -->
+    <div class="tags-row">
+      {{TAGS}}
+    </div>
+  </div>
+
+  <!-- 1 主题+剧情 -->
+  <div class="section-title"><span class="bar"></span>主题 + 剧情</div>
+  <div class="card story">
+    <div class="lead"><b>主题</b>　{{THEME}}</div>
+    <div style="font-size:14px;color:#333;line-height:1.8">{{STORY}}</div>
+    <div class="arc"><b>情绪弧线</b>　{{ARC}}</div>
+    <div style="font-size:12px;color:var(--sub);margin-top:8px">📌 {{STORY_NOTE}}</div>
+  </div>
+
+  <!-- 2 当天条件 -->
+  <div class="section-title"><span class="bar"></span>当天条件 <span class="k">极简</span></div>
+  <div class="card">
+    <div class="cond">
+      {{COND}}
+      <div style="color:var(--sub2);font-size:12px;margin-top:4px">{{COND_NOTE}}</div>
+    </div>
+  </div>
+
+  <!-- 3 参考图 · 远全中近特（重点，5 个景别卡片，每个复制下方 .card 模式） -->
+  <div class="section-title"><span class="bar"></span>参考图 · 远全中近特 <span class="k">重点</span></div>
+
+  <!-- 景别卡片模板（5 个：远/全/中/近/特，每个填一份） -->
+  <!-- emoji 参考：🔭远景 🚶全景 👬中景 😌近景 🔍特写 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">{{SCALE_EMOJI}} {{SCALE_NAME}} <span style="font-size:12px;color:var(--sub);font-weight:400">{{SCALE_DESC}}</span></div>
+    <div class="grid2">
+      <!-- 图：有直链用 .ref 块（可复制多个），无图用 .ph 占位框 -->
+      <div class="ref"><img src="{{SCALE_IMG1_URL}}" alt="{{SCALE_IMG1_ALT}}" loading="lazy"><div class="cap">{{SCALE_IMG1_CAP}}</div></div>
+      <div class="ref"><img src="{{SCALE_IMG2_URL}}" alt="{{SCALE_IMG2_ALT}}" loading="lazy"><div class="cap">{{SCALE_IMG2_CAP}}</div></div>
+      <!-- 无图时改为：<div class="ph"><span class="ico">🖼</span>占位：{{SCALE_NAME}}·{{占位说明}}<br><span style="font-size:11px;color:#ccc">待补充</span></div> -->
+    </div>
+    <div class="pose-tags">{{SCALE_POSE_TAGS}}</div>
+    <a class="xhs-btn" href="{{SCALE_XHS_URL}}" target="_blank" rel="noopener">🔍 小红书自搜：{{SCALE_XHS_KW}}</a>
+  </div>
+  <!-- 远/全/中/近/特五份，逐个填充；pose-tags 的 .l 类：.r=柔光红 .p=低光紫 不带类=灰 -->
+
+  <!-- 4 服装+道具 -->
+  <div class="section-title"><span class="bar"></span>服装 + 道具</div>
+  <div class="card">
+    <ul class="cl">
+      {{OUTFIT_LIST}}
+    </ul>
+    <div class="pill-note">🎨 {{OUTFIT_NOTE}}</div>
+  </div>
+
+  <!-- 5 设备 -->
+  <div class="section-title"><span class="bar"></span>设备</div>
+  <div class="card">
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">⏳ {{GEAR_NOTE}}</div>
+    <ul class="cl" style="margin-top:8px">
+      {{GEAR_LIST}}
+    </ul>
+    <div class="pill-note">🚫 {{GEAR_TIP}}</div>
+  </div>
+
+  <!-- 6 天气调整 -->
+  <div class="section-title"><span class="bar"></span>天气动态调整</div>
+  <div class="card">
+    <div class="weather-grid">
+      <div class="wg"><div class="t">✅ 优势</div><div class="v">{{WEATHER_PRO}}</div></div>
+      <div class="wg"><div class="t">⚠️ 代价</div><div class="v">{{WEATHER_CON}}</div></div>
+    </div>
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">🔑 {{WEATHER_KEY}}</div>
+    <div class="tips">{{WEATHER_TIPS}}</div>
+  </div>
+
+  <!-- 7 Plan B -->
+  <div class="section-title"><span class="bar"></span>Plan B</div>
+  <div class="card planb">
+    <div class="pt">🌂 天气恶化备选</div>
+    <div style="font-size:13px;color:#333;line-height:1.7">{{PLANB_COND}}</div>
+    <ul class="cl" style="margin-top:8px">
+      {{PLANB_LIST}}
+    </ul>
+    <div class="pill-note" style="background:#fff0f2;color:#b0303a">💡 {{PLANB_NOTE}}</div>
+  </div>
+
+  <div class="interact">
+    <span>❤️ 收藏</span><span>📌 待补充</span><span>🔗 Unsplash</span>
+  </div>
+  <div class="foot">
+    参考图来源 Unsplash（直链预览，需现场有网）· 每景别附小红书自搜关键词 · 无图景别保留占位<br>
+    未使用 AI 生图 · shoot-planner skill · {{DATE}}
+  </div>
+
+</div>
+</body>
+</html>
+
+<!--
+占位符清单：
+{{TITLE}} 主标题  {{META}} 副位置行  {{TAGS}} 话题标签(.tag 多个)  {{THEME}} 主题一句话
+{{STORY}} 剧情段落  {{ARC}} 情绪弧线  {{STORY_NOTE}} 拍摄提示
+{{COND}} 条件行  {{COND_NOTE}} 条件小字
+{{SCALE_EMOJI}}{{SCALE_NAME}}{{SCALE_DESC}}{{SCALE_IMG1_URL/ALT/CAP}}{{SCALE_IMG2_URL/ALT/CAP}}{{SCALE_POSE_TAGS}}{{SCALE_XHS_URL}}{{SCALE_XHS_KW}} ×5 景别
+{{OUTFIT_LIST}} 服装道具 li  {{OUTFIT_NOTE}}
+{{GEAR_NOTE}} 设备memory提示  {{GEAR_LIST}} 设备补充 li  {{GEAR_TIP}}
+{{WEATHER_PRO}} 优势  {{WEATHER_CON}} 代价  {{WEATHER_KEY}} 关键判断  {{WEATHER_TIPS}} tips(含 <span class="n">编号</span>)
+{{PLANB_COND}} 启用条件  {{PLANB_LIST}} li  {{PLANB_NOTE}}
+{{DATE}}
+-->
