@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雨日鱼眼张力人像 · 拍摄方案</title>
+<style>
+  :root{
+    --bg:#f6f6f6; --card:#fff; --ink:#222; --sub:#8590a6; --sub2:#999;
+    --red:#FF2442; --red-soft:#fff0f2; --line:rgba(0,0,0,0.06);
+    --shadow:0 2px 12px rgba(0,0,0,0.05); --r:14px; --gold:#ff9500;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Helvetica Neue","Microsoft YaHei",sans-serif;line-height:1.6;font-size:15px}
+  .wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+  .top{background:var(--card);padding:18px 16px 14px;border-bottom:1px solid var(--line)}
+  .top .meta{font-size:12px;color:var(--sub2);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .top .avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#FF2442,#ff6b81);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700}
+  .top h1{font-size:20px;font-weight:800;margin:0 0 8px;letter-spacing:.3px}
+  .top .who{font-size:13px;color:var(--sub)}
+  .tags-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .tag{font-size:12px;color:var(--red);background:var(--red-soft);padding:3px 10px;border-radius:14px;font-weight:600}
+  .tag.g{background:#f2f3f5;color:#5a6373}
+  .tag.o{background:#fff5e6;color:var(--gold)}
+  .section-title{font-size:15px;font-weight:800;margin:20px 16px 10px;display:flex;align-items:center;gap:6px}
+  .section-title .bar{width:4px;height:16px;background:var(--red);border-radius:2px}
+  .section-title .k{font-size:12px;color:var(--sub2);font-weight:400;margin-left:auto}
+  .card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);margin:0 16px 12px;padding:14px 14px;overflow:hidden}
+  .story .lead{font-size:14px;color:var(--sub);margin:0 0 8px}
+  .story .arc{font-size:14px;line-height:1.7;color:#333;margin-top:10px;padding:10px 12px;background:#fafafa;border-radius:10px}
+  .story .arc b{color:var(--red)}
+  .story .arrow{color:var(--red);font-weight:700}
+  .cond{font-size:13px;color:#444;line-height:1.7}
+  .cond .ci{display:inline-block;margin-right:8px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .ref{border-radius:10px;overflow:hidden;background:#f2f2f2;position:relative}
+  .ref img{width:100%;height:150px;object-fit:cover;display:block}
+  .ref .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font-size:11px;padding:14px 8px 6px;text-align:center}
+  .ph{border:1.5px dashed #d8d8d8;border-radius:10px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#bbb;font-size:12px;background:#fafafa;gap:4px;text-align:center;padding:8px}
+  .ph .ico{font-size:22px}
+  .pose-tags{font-size:12px;color:#666;margin:8px 0;line-height:1.7}
+  .pose-tags .l{display:inline-block;background:#f2f3f5;color:#5a6373;padding:2px 8px;border-radius:10px;margin:0 4px 4px 0;font-size:11px}
+  .pose-tags .l.r{background:var(--red-soft);color:var(--red)}
+  .pose-tags .l.p{background:#f0eaf6;color:#7b5ea0}
+  .xhs-btn{display:inline-flex;align-items:center;gap:4px;margin-top:4px;font-size:12px;color:var(--red);text-decoration:none;border:1px solid var(--red);padding:4px 12px;border-radius:14px;font-weight:600;background:#fff}
+  ul.cl{margin:0;padding:0;list-style:none}
+  ul.cl li{padding:9px 0;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:10px;font-size:14px;color:#333}
+  ul.cl li:last-child{border-bottom:none}
+  input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--red);border-radius:4px}
+  .pill-note{font-size:12px;color:var(--sub);background:#fafafa;border-radius:8px;padding:8px 10px;margin-top:8px;line-height:1.6}
+  .weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .wg{background:#fafafa;border-radius:10px;padding:8px 10px;font-size:12px}
+  .wg .t{color:var(--sub2);font-size:11px;margin-bottom:2px}
+  .wg .v{color:#333;font-weight:600}
+  .tips{font-size:13px;color:#444;line-height:1.9}
+  .tips .n{color:var(--red);font-weight:700}
+  .planb{background:#fff7f8;border:1.5px dashed var(--red);border-radius:var(--r)}
+  .planb .pt{font-size:13px;color:var(--red);font-weight:700;margin-bottom:6px}
+  .foot{color:var(--sub2);font-size:11px;text-align:center;margin:24px 16px 0;line-height:1.7}
+  .interact{display:flex;justify-content:center;gap:24px;margin:8px 0 4px;color:var(--sub2);font-size:12px}
+  .interact span{display:flex;align-items:center;gap:4px}
+  @media(max-width:480px){body{font-size:14px}.ref img,.ph{height:130px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 笔记头 -->
+  <div class="top">
+    <div class="meta"><span class="avatar">摄</span><span>shoot-planner · 拍摄方案</span></div>
+    <h1>雨日鱼眼张力人像 · 金沙湖大剧院</h1>
+    <div class="who">2026-11-14 周六 · 杭州钱塘区 · 富士 X-T30II + 铭匠 7.5mm 鱼眼</div>
+    <div class="tags-row">
+      <span class="tag">#街头张力</span>
+      <span class="tag">#鱼眼超广角人像</span>
+      <span class="tag">#雨天叙事</span>
+      <span class="tag g">中雨转小雨 13~18℃</span>
+      <span class="tag g">主拍 14:30–17:00</span>
+      <span class="tag o">首次拍超广角</span>
+    </div>
+  </div>
+
+  <!-- 1 主题+剧情 -->
+  <div class="section-title"><span class="bar"></span>主题 + 剧情</div>
+  <div class="card story">
+    <div class="lead"><b>主题</b>　雨天的金沙湖大剧院——鱼眼超广角下的张力人像，人是绝对主角，弧墙与水洼只是被拉伸的戏剧垫衬。风格：街头张力·雨日人像（主）/ 情绪疏离·雨日（备）/ 清新日系·雨日（备）。</div>
+    <div style="font-size:14px;color:#333;line-height:1.8">雨天她来大剧院广场，不是来看戏，是来淋一场。外套敞着、吊带贴身、热裤露腿，撑一把透明伞大步走过弧形白墙前，马丁靴踩过水洼溅起水花。她在立柱边停了一下甩了甩伞上的水，回头冲镜头一个带劲的笑，然后继续往雨里走，越走越远，最后回头一望收尾。</div>
+    <div class="arc"><b>情绪弧线</b>　撑伞大步来（动） <span class="arrow">→</span> 立柱边甩伞回眸（张力） <span class="arrow">→</span> 走远回身一望（悬）。先广场水洼前拍远景+全身大步走，再退立柱廊下拍半身甩伞回眸，最后走远拍全身回望+水洼倒影特写。</div>
+    <div style="font-size:12px;color:var(--sub);margin-top:8px">📌 鱼眼全程人脸放中心，边缘留给建筑弧线和雨；按弧线走，不堆姿势。</div>
+  </div>
+
+  <!-- 2 当天条件 -->
+  <div class="section-title"><span class="bar"></span>当天条件 <span class="k">极简</span></div>
+  <div class="card">
+    <div class="cond">
+      <span class="ci">📅 2026-11-14 周六</span>
+      <span class="ci">📍 杭州钱塘区 · 金沙湖大剧院（弧形白墙 + 门前广场/大台阶 + 立柱廊 + 湖边步道）</span>
+      <span class="ci">🌧 中雨转小雨 13~18℃</span>
+      <span class="ci">🕙 主拍 14:30–17:00 午后漫射至午后金，17:00–17:30 接蓝调头收尾</span>
+      <div style="color:var(--sub2);font-size:12px;margin-top:4px">天气为景点级中期预报，到场先看天。</div>
+    </div>
+  </div>
+
+  <!-- 3 参考图 · 远全中近特 -->
+  <div class="section-title"><span class="bar"></span>参考图 · 远全中近特 <span class="k">重点</span></div>
+
+  <!-- 远景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🔭 远景 <span style="font-size:12px;color:var(--sub);font-weight:400">人小环境大，交代"雨中剧场"</span></div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:6px">情绪节点：开场。弧墙+广场水洼，人占画面 1/5 以下。</div>
+    <div class="grid2">
+      <div class="ref"><img src="https://unsplash.com/photos/a-puddle-of-water-on-the-side-of-a-road-SwMlweBQGGk/download?w=400&q=60&auto=format&fit=crop" alt="远景·环境水洼倒影参考" loading="lazy"><div class="cap">环境水洼倒影</div></div>
+      <div class="ph"><span class="ico">🖼</span>占位：远景·大剧院弧墙+广场雨景全景人小<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    </div>
+    <div class="pose-tags">光线：<span class="l">雨天漫射</span> <span class="l">透光逆光轮廓</span> · 动作：<span class="l">走动不看镜头</span> <span class="l">雨中慢走</span> <span class="l">撑伞过广场</span></div>
+    <div style="font-size:12px;color:#666;margin-bottom:6px">机位：广场远端鱼眼低角，弧墙在画面边缘拉伸，人放中下偏小。</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=%E9%B1%BC%E7%9C%BC%E8%B6%85%E5%B9%BF%E8%A7%92%E5%BB%BA%E7%AD%91%E4%BA%BA%E5%83%8F" target="_blank" rel="noopener">🔍 小红书自搜：鱼眼超广角建筑人像</a>
+  </div>
+
+  <!-- 全景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🚶 全景 <span style="font-size:12px;color:var(--sub);font-weight:400">全身入画，展现服饰与姿态（重点）</span></div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:6px">情绪节点：开场→推进。大步走、撑伞走、扶栏杆远眺。鱼眼低角仰拍拉长腿。</div>
+    <div class="grid2">
+      <div class="ref"><img src="https://unsplash.com/photos/woman-with-umbrella-walks-down-rainy-city-street-IkZ__XhtAyI/download?w=400&q=60&auto=format&fit=crop" alt="全景·雨中撑伞全身走动参考" loading="lazy"><div class="cap">雨中撑伞全身走动</div></div>
+      <div class="ph"><span class="ico">🖼</span>占位：全景·鱼眼仰拍马丁靴+热裤全身，弧墙背景<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    </div>
+    <div class="pose-tags">光线：<span class="l">雨天漫射</span> <span class="l">透光逆光轮廓</span> · 动作：<span class="l">大步走抓拍</span> <span class="l">撑伞慢走</span> <span class="l">扶栏杆远眺</span></div>
+    <div style="font-size:12px;color:#666;margin-bottom:6px">机位：贴近 1–1.5m 鱼眼低位仰拍，人放中心，腿在前缘拉伸，脸仍居中。</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=%E9%9B%A8%E5%A4%A9%E6%92%91%E4%BC%9E%E5%85%A8%E8%BA%AB%E8%A1%97%E6%8B%8D" target="_blank" rel="noopener">🔍 小红书自搜：雨天撑伞全身街拍</a>
+  </div>
+
+  <!-- 中景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">👬 中景 <span style="font-size:12px;color:var(--sub);font-weight:400">半身，情绪+动作互动（重点）</span></div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:6px">情绪节点：推进。立柱廊下/弧檐下避雨，撑伞回眸、靠立柱插兜、甩伞水。</div>
+    <div class="grid2">
+      <div class="ph"><span class="ico">🖼</span>占位：中景·撑透明伞半身回眸，立柱背景<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+      <div class="ph"><span class="ico">🖼</span>占位：中景·靠立柱单手插兜甩伞水，半身<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    </div>
+    <div class="pose-tags">光线：<span class="l p">檐下/廊下低光</span> · 动作：<span class="l">撑伞回眸</span> <span class="l">靠立柱插兜</span> <span class="l">屋檐避雨望远</span> <span class="l">收伞甩水连拍</span></div>
+    <div style="font-size:12px;color:#666;margin-bottom:6px">机位：鱼眼 0.5–0.8m，人放中心，立柱/弧檐在边缘弯曲做垫衬。</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=%E9%9B%A8%E5%A4%A9%E6%92%91%E4%BC%9E%E5%8D%8A%E8%BA%AB%E5%9B%9E%E7%9C%B8" target="_blank" rel="noopener">🔍 小红书自搜：雨天撑伞半身回眸</a>
+  </div>
+
+  <!-- 近景 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">😌 近景 <span style="font-size:12px;color:var(--sub);font-weight:400">胸像，情绪为主</span></div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:6px">情绪节点：推进→收尾。雨中侧脸回眸、仰望侧脸、低头看水洼胸像。脸务必正中。</div>
+    <div class="grid2">
+      <div class="ph"><span class="ico">🖼</span>占位：近景·雨中侧脸回眸胸像，脸居中<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+      <div class="ph"><span class="ico">🖼</span>占位：近景·仰望侧脸+雨丝，鱼眼近景<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    </div>
+    <div class="pose-tags">光线：<span class="l p">漫射/低光</span> <span class="l">透光侧逆光勾发</span> · 动作：<span class="l">侧脸回眸</span> <span class="l">仰望侧脸</span> <span class="l">低头看水洼胸像</span></div>
+    <div style="font-size:12px;color:#666;margin-bottom:6px">机位：鱼眼 0.3–0.5m 胸像，脸严格放画面中心防鼻大畸变，背景弧墙虚化弯曲。</div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=%E9%9B%A8%E4%B8%AD%E4%BE%A7%E8%84%B8%E8%83%B8%E5%83%8F" target="_blank" rel="noopener">🔍 小红书自搜：雨中侧脸胸像</a>
+  </div>
+
+  <!-- 特写 -->
+  <div class="card">
+    <div style="font-size:14px;font-weight:700;margin-bottom:6px">🔍 特写 <span style="font-size:12px;color:var(--sub);font-weight:400">脸/手/物件细节（鱼眼慎拍纯脸）</span></div>
+    <div style="font-size:12px;color:var(--sub);margin-bottom:6px">情绪节点：收尾。多拍手撑伞、水洼倒影、伞面雨珠、外套质感；纯脸大特写少拍。</div>
+    <div class="grid2">
+      <div class="ref"><img src="https://unsplash.com/photos/the-reflection-of-a-street-light-in-a-puddle-of-water--0l5bGh0qEQ/download?w=400&q=60&auto=format&fit=crop" alt="特写·水洼路灯倒影参考" loading="lazy"><div class="cap">水洼路灯倒影</div></div>
+      <div class="ref"><img src="https://unsplash.com/photos/a-city-street-with-a-puddle-of-water-on-the-ground-t7leFNV737Y/download?w=400&q=60&auto=format&fit=crop" alt="特写·街面水洼倒影参考" loading="lazy"><div class="cap">街面水洼倒影</div></div>
+    </div>
+    <div class="ph" style="height:60px;margin-top:8px"><span class="ico">🖼</span>占位：特写 · 手撑透明伞局部 / 伞面雨珠 / 外套质感<br><span style="font-size:11px;color:#ccc">待补充</span></div>
+    <div class="pose-tags">光线：<span class="l p">低光</span> · 动作：<span class="l">手撑伞局部</span> <span class="l">水洼倒影俯拍</span> <span class="l">伞面雨珠</span> <span class="l">半脸阴影（立柱切）</span></div>
+    <a class="xhs-btn" href="https://www.xiaohongshu.com/search_result?keyword=%E6%B0%B4%E6%B4%BC%E5%80%92%E5%BD%B1%E6%8B%8D%E7%85%A7" target="_blank" rel="noopener">🔍 小红书自搜：水洼倒影拍照</a>
+  </div>
+
+  <!-- 4 服装+道具 -->
+  <div class="section-title"><span class="bar"></span>服装 + 道具</div>
+  <div class="card">
+    <ul class="cl">
+      <li><input type="checkbox"> 下身：高腰热裤（深色牛仔/黑，避浅色易脏）</li>
+      <li><input type="checkbox"> 上身：贴身吊带/背心（白/黑/与外套撞色）</li>
+      <li><input type="checkbox"> 外套（选一做主撞色）：短款皮衣（黑/棕）/ 牛仔外套 / 工装外套 / Bomber</li>
+      <li><input type="checkbox"> 鞋：马丁靴或厚底靴（防滑踩水 + 鱼眼仰拍拉腿）</li>
+      <li><input type="checkbox"> 备：干毛巾 + 备用袜（踩湿换）</li>
+      <li><input type="checkbox"> 道具：透明伞（首选能看见脸）· 耳机 · 饮料罐</li>
+    </ul>
+    <div class="pill-note">🎨 建筑灰白+雨天灰调为底，靠外套一抹撞色（皮衣黑/牛仔蓝）+ 暖肤色提活；热裤吊带给鱼眼中心一个干净利落轮廓，外套加层次。<b>避免花纹格纹</b>（鱼眼边缘拉伸变形难看）。</div>
+  </div>
+
+  <!-- 5 设备 -->
+  <div class="section-title"><span class="bar"></span>设备</div>
+  <div class="card">
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">⏳ 设备清单见 memory（富士 X-T30II + 铭匠 7.5mm f/1.8 鱼眼，手动对焦）。本次仅列关键补充项：</div>
+    <ul class="cl" style="margin-top:8px">
+      <li><input type="checkbox"> 机身防水套 / 雨衣（鱼眼前组离雨近，必带）</li>
+      <li><input type="checkbox"> 镜头布（多条）+ 密封袋（进室内前入袋缓温防起雾）</li>
+      <li><input type="checkbox"> 备用电池 2 块（冷天+雨天掉电快）</li>
+      <li><input type="checkbox"> 暖宝宝 + 保温杯（给模特，13~18℃雨里穿热裤吊带冷）</li>
+    </ul>
+    <div class="pill-note"><b>本次风格机内参数（鱼眼·雨天·街头张力）</b><br>
+      胶片模拟：<b>Classic Negative</b>（街头张力首选）/ 备选 Classic Chrome<br>
+      白平衡：自动偏冷 或 阴天，肤色优先<br>
+      曝光：+0.3~0.7 EV；ISO 400–1600；光圈 <b>f/4–5.6</b>（鱼眼景深大 f/4 已够锐）；快门 1/250+ 抓走动；特写低光可 f/1.8<br>
+      对焦：手动 + 峰值对焦，对焦点放中心人脸</div>
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">🚫 不带重型补光：雨天街头张力靠环境光，鱼眼 f/1.8+ISO 够用。</div>
+  </div>
+
+  <!-- 6 天气调整 -->
+  <div class="section-title"><span class="bar"></span>天气动态调整</div>
+  <div class="card">
+    <div class="weather-grid">
+      <div class="wg"><div class="t">✅ 优势</div><div class="v">漫射光均匀无硬阴影肤色干净；水洼倒影是额外画面层；雨丝鱼眼边缘拉伸出戏剧感；广场雨天人少好取景</div></div>
+      <div class="wg"><div class="t">⚠️ 代价</div><div class="v">光暗 ISO 高；前组易沾雨起雾；模特穿热裤吊带怕冷；地面湿滑禁跳跃</div></div>
+    </div>
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">🔑 雨大→退立柱廊/弧檐下拍半身特写；雨小→广场水洼前全身抓拍；云透光瞬间→逆光拍轮廓发丝。</div>
+    <div class="tips">
+      <span class="n">1.</span> 设备防水第一：鱼眼前组频繁沾雨，每机位都擦；进室内先入密封袋缓温防雾<br>
+      <span class="n">2.</span> 模特保暖：热裤吊带在 13~18℃ 雨里冷，外套常备拍完即披，暖宝宝贴腰后<br>
+      <span class="n">3.</span> 地面湿滑：禁跳跃，大步走注意防滑，马丁靴防滑优先<br>
+      <span class="n">4.</span> 鱼眼畸变：<b>人脸务必画面中心</b>，边缘留给建筑/天空/水洼；纯脸大特写少拍<br>
+      <span class="n">5.</span> 场地确认：大剧院公共广场/湖边步道通常开放可拍，室内大厅需许可；避开车道与黄线区域
+    </div>
+  </div>
+
+  <!-- 7 Plan B -->
+  <div class="section-title"><span class="bar"></span>Plan B</div>
+  <div class="card planb">
+    <div class="pt">🌂 雨变大备选</div>
+    <div style="font-size:13px;color:#333;line-height:1.7">若中雨持续、广场无法站人 → 转 <b>大剧院立柱廊下 + 弧形檐下 + 周边咖啡馆窗边</b>。</div>
+    <ul class="cl" style="margin-top:8px">
+      <li>风格延续：仍是雨日鱼眼张力人像，人像为主不变，只换能扛雨的有顶场景</li>
+      <li>扛天气：立柱廊/弧檐有顶挡雨、地面相对干；咖啡馆窗边可用窗玻璃雨痕做前景</li>
+      <li>景别调整：远景砍掉（有顶空间局限），重心转中景/近景/特写；窗边加"脸贴窗、雨痕在玻璃"式姿势</li>
+      <li>剧情：弧线不变（来→停→走远），"走远"改为"廊下走远"或"窗边转身"</li>
+      <li>设备：廊下光更暗，ISO 1600–3200，f/2.8–4；咖啡馆内可 f/1.8</li>
+    </ul>
+    <div class="pill-note" style="background:#fff0f2;color:#b0303a">💡 Plan B 不是另起主题，是同主题换能扛天气的场景。</div>
+  </div>
+
+  <!-- 8 后期调色 -->
+  <div class="section-title"><span class="bar"></span>后期调色 <span class="k">小篇幅</span></div>
+  <div class="card">
+    <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:6px">🎨 直出优化（LR / Capture One）</div>
+    <div class="tips" style="font-size:12px">
+      <span class="n">基础</span>曝光 +0.3，对比度 +12，高光 -20（压天空/弧墙白），阴影 +15，白色色阶 -10<br>
+      <span class="n">色彩</span>色温 -150K（雨天氛围），色调 +5；橙色饱和 -10、明度 +10（肤色不黄）；建筑蓝青饱和 +10<br>
+      <span class="n">质感</span>清晰度 +12，Dehaze +8（穿雨雾），颗粒 +18（胶片感）<br>
+      <span class="n">暗角</span>鱼眼边缘本就有自然暗角，少加（-10 以内或不加）
+    </div>
+    <div class="pill-note" style="margin-top:8px"><b>备选风格：</b>复古胶片·雨日 → Provia/ASTIA，色温 +300K 暖调，颗粒 +25，暗角 -15；情绪疏离·雨日 → Classic Chrome，对比 +20，饱和 -15，冷调更重。</div>
+    <div class="pill-note" style="background:var(--red-soft);color:#b0303a">📷 富士 Classic Negative 机内直出已接近成片，后期微调曝光与肤色即可。鱼眼畸变为风格一部分，<b>不做镜头校正</b>（校正后失去张力）。</div>
+  </div>
+
+  <div class="interact">
+    <span>❤️ 收藏</span><span>📌 待补充</span><span>🔗 Unsplash</span>
+  </div>
+  <div class="foot">
+    参考图来源 Unsplash（直链预览，需现场有网）· 每景别附小红书自搜关键词 · 无图景别保留占位<br>
+    未使用 AI 生图 · shoot-planner skill · 2026-11-14
+  </div>
+
+</div>
+</body>
+</html>
